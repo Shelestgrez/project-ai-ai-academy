@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="d-flex justify-content-between align-items-start gap-3 mb-4 flex-wrap lesson-header">
+    <div>
+        <h2 class="fw-bold mb-1">{{ lesson.title }}</h2>
+        <p class="text-secondary mb-0">{{ t('lesson_title') }}</p>
+    </div>
+    <a class="btn btn-outline-secondary" href="{{ url_for('dashboard', lang=lang) }}">{{ t('back_dashboard') }}</a>
+</section>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <section class="card border-0 shadow-sm mb-4 overflow-hidden">
+            <img src="{{ url_for('static', filename=lesson.image) }}" class="lesson-hero-image" alt="{{ lesson.title }}">
+        </section>
+
+        <section class="card border-0 shadow-sm mb-4 lesson-glass">
+            <div class="card-body p-4">
+                <h3 class="h5 mb-3">{{ t('lesson_overview') }}</h3>
+                <p class="mb-0 text-secondary">{{ lesson.overview }}</p>
+            </div>
+        </section>
+
+        <section class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h3 class="h5 mb-3">{{ t('lesson_sections') }}</h3>
+                <div class="vstack gap-3">
+                    {% for section in lesson.sections %}
+                        <article class="section-block">
+                            <h4 class="h6 fw-bold mb-2">{{ section.title }}</h4>
+                            <p class="mb-0 text-secondary">{{ section.text }}</p>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <section class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h3 class="h5 mb-3">{{ t('lesson_steps') }}</h3>
+                <ol class="steps-list mb-0">
+                    {% for step in lesson.steps %}
+                        <li>{{ step }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </section>
+
+        <section class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h3 class="h5 mb-3">{{ t('quiz_title') }}</h3>
+                {% if result_message %}
+                    <div class="alert {% if completed %}alert-success{% else %}alert-warning{% endif %}">
+                        {{ result_message }}
+                    </div>
+                {% endif %}
+                <form method="post" action="{{ url_for('submit_quiz', lesson_id=lesson.id, lang=lang) }}">
+                    {% for question in lesson.quiz %}
+                        <fieldset class="mb-4 quiz-card">
+                            <legend class="h6">{{ loop.index }}. {{ question.question }}</legend>
+                            {% for option in question.options %}
+                                <div class="form-check mb-1">
+                                    <input class="form-check-input" type="radio" name="{{ question.id }}" id="{{ question.id }}_{{ loop.index0 }}" value="{{ loop.index0 }}" required>
+                                    <label class="form-check-label" for="{{ question.id }}_{{ loop.index0 }}">
+                                        {{ option }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </fieldset>
+                    {% endfor %}
+                    <button class="btn btn-primary btn-lg" type="submit">{{ t('quiz_submit') }}</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <div class="col-lg-4">
+        <section class="card border-0 shadow-sm mb-4 sticky-side">
+            <div class="card-body">
+                <h3 class="h6 text-uppercase text-muted mb-3">{{ t('practice_title') }}</h3>
+                <p class="mb-0">{{ lesson.practice }}</p>
+            </div>
+        </section>
+
+        <section class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h3 class="h6 text-uppercase text-muted mb-3">{{ t('glossary_title') }}</h3>
+                <div class="vstack gap-3">
+                    {% for item in lesson.glossary %}
+                        <div>
+                            <p class="fw-semibold mb-1">{{ item.term }}</p>
+                            <p class="small text-secondary mb-0">{{ item.definition }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

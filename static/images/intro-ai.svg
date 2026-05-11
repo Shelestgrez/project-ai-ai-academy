@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="420" fill="url(#g)"/>
+  <circle cx="180" cy="120" r="52" fill="#ffffff" opacity="0.18"/>
+  <circle cx="620" cy="320" r="72" fill="#ffffff" opacity="0.12"/>
+  <rect x="150" y="130" width="500" height="180" rx="20" fill="#ffffff" opacity="0.95"/>
+  <text x="400" y="205" text-anchor="middle" font-size="42" font-family="Arial" fill="#0f172a">AI Basics</text>
+  <text x="400" y="245" text-anchor="middle" font-size="22" font-family="Arial" fill="#334155">Core concepts and intuition</text>
+</svg>

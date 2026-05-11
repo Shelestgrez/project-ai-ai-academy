@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420">
+  <defs>
+    <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#4338ca"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="420" fill="url(#g3)"/>
+  <g stroke="#ffffff" stroke-width="2" opacity="0.9">
+    <line x1="220" y1="120" x2="400" y2="90"/><line x1="220" y1="200" x2="400" y2="170"/><line x1="220" y1="280" x2="400" y2="250"/>
+    <line x1="400" y1="90" x2="580" y2="120"/><line x1="400" y1="170" x2="580" y2="200"/><line x1="400" y1="250" x2="580" y2="280"/>
+  </g>
+  <g fill="#ffffff">
+    <circle cx="220" cy="120" r="12"/><circle cx="220" cy="200" r="12"/><circle cx="220" cy="280" r="12"/>
+    <circle cx="400" cy="90" r="12"/><circle cx="400" cy="170" r="12"/><circle cx="400" cy="250" r="12"/>
+    <circle cx="580" cy="120" r="12"/><circle cx="580" cy="200" r="12"/><circle cx="580" cy="280" r="12"/>
+  </g>
+  <text x="400" y="360" text-anchor="middle" font-size="36" font-family="Arial" fill="#ffffff">Neural Networks</text>
+</svg>

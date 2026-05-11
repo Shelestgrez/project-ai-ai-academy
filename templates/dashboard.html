@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="mb-4">
+    <h2 class="fw-bold">{{ t('dashboard_title') }}</h2>
+    <p class="text-secondary mb-0">{{ t('welcome') }}, {{ user_name }}!</p>
+</section>
+
+<section class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <h3 class="h5 mb-3">{{ t('progress') }}: {{ progress_percent }}%</h3>
+        <div class="progress" role="progressbar" aria-valuenow="{{ progress_percent }}" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: {{ progress_percent }}%;"></div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h3 class="h4 mb-3">{{ t('lessons_title') }}</h3>
+    <div class="row g-3">
+        {% for lesson in lessons %}
+            <div class="col-md-6 col-xl-4">
+                <article class="card h-100 border-0 shadow-sm">
+                    <img src="{{ url_for('static', filename=lesson.image) }}" class="card-img-top lesson-thumb" alt="{{ lesson.title }}">
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="h5">{{ lesson.title }}</h4>
+                        <p class="text-secondary">{{ lesson.description }}</p>
+                        <p class="small mb-2">
+                            <strong>{{ t('score_label') }}:</strong> {{ lesson.quiz_score }}/{{ lesson.total_questions }}
+                        </p>
+                        <p class="mb-3">
+                            {% if lesson.completed %}
+                                <span class="badge text-bg-success">{{ t('status_done') }}</span>
+                            {% else %}
+                                <span class="badge text-bg-warning">{{ t('status_pending') }}</span>
+                            {% endif %}
+                        </p>
+                        <a class="btn btn-outline-primary mt-auto" href="{{ url_for('lesson_detail', lesson_id=lesson.id, lang=lang) }}">{{ t('open_lesson') }}</a>
+                    </div>
+                </article>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="col-lg-6 mx-auto">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+    <h2 class="h3 mb-3">{{ t('register_title') }}</h2>
+    {% if message %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endif %}
+    <form method="post">
+        <label class="form-label">{{ t('register_name') }}</label>
+        <input class="form-control mb-3" type="text" name="name" required>
+
+        <label class="form-label">{{ t('register_email') }}</label>
+        <input class="form-control mb-3" type="email" name="email" required>
+
+        <label class="form-label">{{ t('register_password') }}</label>
+        <input class="form-control mb-4" type="password" name="password" minlength="6" required>
+
+        <button type="submit" class="btn btn-primary w-100">{{ t('register_submit') }}</button>
+    </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

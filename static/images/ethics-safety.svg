@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420">
+  <defs>
+    <linearGradient id="g5" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="420" fill="url(#g5)"/>
+  <path d="M400 95 L570 160 L570 245 C570 300 500 344 400 370 C300 344 230 300 230 245 L230 160 Z" fill="#ffffff" opacity="0.95"/>
+  <path d="M400 145 L520 190 L520 238 C520 276 470 307 400 328 C330 307 280 276 280 238 L280 190 Z" fill="#dbeafe"/>
+  <text x="400" y="220" text-anchor="middle" font-size="28" font-family="Arial" fill="#1e3a8a">SAFE AI</text>
+  <text x="400" y="390" text-anchor="middle" font-size="30" font-family="Arial" fill="#ffffff">Ethics & Safety</text>
+</svg>

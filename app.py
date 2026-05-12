@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import os
-import sqlite3
 from functools import wraps
 from pathlib import Path
 from typing import Dict, List
 
-from flask import Flask, g, redirect, render_template, request, session, url_for
+from flask import Flask, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
+
+from db_support import INTEGRITY_ERRORS, attach_database, get_db, init_schema
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -18,6 +19,17 @@ def create_app() -> Flask:
     app = Flask(__name__)
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-key-change-me")
     app.config["DATABASE"] = str(DATABASE_PATH)
+    cookie_secure = os.environ.get("SESSION_COOKIE_SECURE", "").lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    app.config.update(
+        SESSION_COOKIE_SECURE=cookie_secure,
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE="Lax",
+    )
+    attach_database(app, str(DATABASE_PATH))
 
     translations = {
         "ru": {
@@ -930,54 +942,6 @@ def create_app() -> Flask:
         for lang, lessons in lesson_catalog.items()
     }
 
-    def get_db() -> sqlite3.Connection:
-        if "db" not in g:
-            g.db = sqlite3.connect(app.config["DATABASE"])
-            g.db.row_factory = sqlite3.Row
-        return g.db
-
-    def close_db(_e=None) -> None:
-        db = g.pop("db", None)
-        if db is not None:
-            db.close()
-
-    app.teardown_appcontext(close_db)
-
-    def init_db() -> None:
-        db = get_db()
-        db.executescript(
-            """
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                email TEXT UNIQUE NOT NULL,
-                password_hash TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
-
-            CREATE TABLE IF NOT EXISTS progress (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER NOT NULL,
-                lesson_id TEXT NOT NULL,
-                completed INTEGER NOT NULL DEFAULT 0,
-                quiz_score INTEGER NOT NULL DEFAULT 0,
-                total_questions INTEGER NOT NULL DEFAULT 0,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                UNIQUE(user_id, lesson_id),
-                FOREIGN KEY(user_id) REFERENCES users(id)
-            );
-            """
-        )
-        columns = {
-            row["name"]
-            for row in db.execute("PRAGMA table_info(progress)").fetchall()
-        }
-        if "quiz_score" not in columns:
-            db.execute("ALTER TABLE progress ADD COLUMN quiz_score INTEGER NOT NULL DEFAULT 0")
-        if "total_questions" not in columns:
-            db.execute("ALTER TABLE progress ADD COLUMN total_questions INTEGER NOT NULL DEFAULT 0")
-        db.commit()
-
     def get_lang() -> str:
         lang = request.args.get("lang") or session.get("lang", "ru")
         if lang not in translations:
@@ -997,10 +961,8 @@ def create_app() -> Flask:
 
         return wrapped
 
-    # Initialize DB schema once at startup to avoid per-request
-    # writes/locks on SQLite during normal app usage.
     with app.app_context():
-        init_db()
+        init_schema(app)
 
     @app.context_processor
     def inject_globals():
@@ -1042,7 +1004,7 @@ def create_app() -> Flask:
                             message=t("message_register_success", lang),
                         )
                     )
-                except sqlite3.IntegrityError:
+                except INTEGRITY_ERRORS:
                     return render_template(
                         "register.html",
                         lang=lang,
@@ -1176,7 +1138,7 @@ def create_app() -> Flask:
             """
             INSERT INTO progress (user_id, lesson_id, completed, quiz_score, total_questions)
             VALUES (?, ?, ?, ?, ?)
-            ON CONFLICT(user_id, lesson_id) DO UPDATE SET
+            ON CONFLICT (user_id, lesson_id) DO UPDATE SET
                 completed = excluded.completed,
                 quiz_score = excluded.quiz_score,
                 total_questions = excluded.total_questions,
@@ -1204,7 +1166,7 @@ def create_app() -> Flask:
             """
             INSERT INTO progress (user_id, lesson_id, completed, quiz_score, total_questions)
             VALUES (?, ?, 1, 0, 0)
-            ON CONFLICT(user_id, lesson_id) DO UPDATE SET
+            ON CONFLICT (user_id, lesson_id) DO UPDATE SET
                 completed = 1,
                 updated_at = CURRENT_TIMESTAMP
             """,

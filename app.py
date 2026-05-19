@@ -27,13 +27,17 @@ from learning import (
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_PATH = Path(os.environ.get("DATABASE_PATH", str(BASE_DIR / "database.db")))
+
+
+def database_path() -> Path:
+    return Path(os.environ.get("DATABASE_PATH", str(BASE_DIR / "database.db")))
 
 
 def create_app() -> Flask:
+    db_path = database_path()
     app = Flask(__name__)
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-key-change-me")
-    app.config["DATABASE"] = str(DATABASE_PATH)
+    app.config["DATABASE"] = str(db_path)
     cookie_secure = os.environ.get("SESSION_COOKIE_SECURE", "").lower() in (
         "1",
         "true",
@@ -44,7 +48,7 @@ def create_app() -> Flask:
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
     )
-    attach_database(app, str(DATABASE_PATH))
+    attach_database(app, str(db_path))
 
     translations = {
         "ru": {
@@ -332,6 +336,8 @@ def create_app() -> Flask:
             "ach_collector": "Жинақтаушы",
             "xp_gained": "XP алынды",
             "all_lessons_done": "Барлық сабақ өтілді!",
+            "daily_ok": "Дұрыс! Жалғастырыңыз.",
+            "daily_fail": "Қате. Сабақты қайталаңыз.",
         },
     }
 

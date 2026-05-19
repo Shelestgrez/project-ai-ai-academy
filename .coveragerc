@@ -1,0 +1,9 @@
+[run]
+source = app,db_support,learning
+omit =
+    tests/*
+    .venv/*
+
+[report]
+show_missing = True
+skip_covered = False

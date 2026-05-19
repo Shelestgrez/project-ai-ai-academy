@@ -217,7 +217,30 @@ powershell -ExecutionPolicy Bypass -File .\create_desktop_shortcut.ps1
 - приложение ориентировано на локальное обучение/демо-использование;
 - `SECRET_KEY` по умолчанию задан как dev-значение и для продакшена должен быть заменён через переменную окружения;
 - используется SQLite, что отлично для локальной работы, но для высокой нагрузки лучше перейти на PostgreSQL/MySQL;
-- отсутствуют отдельные автоматические тесты (pytest), рекомендуется добавить их на следующих этапах.
+
+## Тесты и CI
+
+### Локальный запуск
+
+```powershell
+pip install -r requirements-dev.txt
+pytest
+```
+
+С отчётом о покрытии:
+
+```powershell
+pytest --cov --cov-report=term-missing
+```
+
+### GitHub Actions
+
+При каждом push и pull request в ветку `main` запускается workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml):
+
+- установка Python 3.11;
+- `pytest` с проверкой покрытия (минимум 55% для `app`, `db_support`, `learning`).
+
+Отдельно деплой GitHub Pages выполняется workflow [`.github/workflows/deploy-github-pages.yml`](.github/workflows/deploy-github-pages.yml).
 
 ## Идеи для дальнейшего развития
 
@@ -225,5 +248,4 @@ powershell -ExecutionPolicy Bypass -File .\create_desktop_shortcut.ps1
 - реализовать панель администратора для управления уроками;
 - внедрить графики прогресса и достижения;
 - добавить загрузку материалов (PDF/видео);
-- подключить email-подтверждение регистрации и восстановление пароля;
-- покрыть проект автотестами и CI.
+- подключить email-подтверждение регистрации и восстановление пароля.

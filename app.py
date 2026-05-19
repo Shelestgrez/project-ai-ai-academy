@@ -896,6 +896,87 @@ def create_app() -> Flask:
                     {"id": "q5", "question": "Как снизить риск в продакшене?", "options": ["Guardrails и эскалация к человеку", "Полное отключение логов", "Один промпт на все домены"], "answer": 0},
                 ],
             },
+            {
+                "id": "computer-vision",
+                "title": "Компьютерное зрение",
+                "description": "Как машины «видят» изображения: от пикселей до детекции объектов.",
+                "overview": "Урок о том, как ИИ обрабатывает изображения: классификация, детекция, сегментация и типичные ошибки в продакшене.",
+                "sections": [
+                    {"title": "1) От пикселей к признакам", "text": "Сверточные сети (CNN) извлекают контуры, текстуры и формы. На ранних слоях — простые паттерны, на глубоких — объекты.", "image": "images/computer-vision.jpg"},
+                    {"title": "2) Задачи CV", "text": "Классификация (что на фото), детекция (где объект), сегментация (пиксельная маска), трекинг в видео."},
+                    {"title": "3) Данные и аугментация", "text": "Поворот, обрезка, шум и изменение освещения помогают модели не переобучаться на один ракурс."},
+                    {"title": "4) Метрики", "text": "Accuracy, IoU для детекции, mAP. Важно смотреть ошибки на редких классах."},
+                    {"title": "5) Продакшен", "text": "Учитывайте задержку, размер модели на edge-устройствах и смену условий съёмки (ночь, блики)."},
+                ],
+                "practice": "Опишите систему «умная камера на складе»: вход (разрешение, FPS), задача (детекция коробок), метрика и 2 риска.",
+                "glossary": [
+                    {"term": "CNN", "definition": "Сверточная нейросеть для изображений."},
+                    {"term": "IoU", "definition": "Пересечение предсказанной и эталонной маски."},
+                    {"term": "Augmentation", "definition": "Искусственное расширение обучающих изображений."},
+                ],
+                "steps": ["Соберите размеченный датасет.", "Обучите baseline-классификатор.", "Добавьте аугментацию.", "Оцените на hold-out.", "Проверьте на сложных кейсах (тень, размытие)."],
+                "quiz": [
+                    {"id": "q1", "question": "Что делает CNN?", "options": ["Извлекает признаки из изображения", "Только сжимает JPEG", "Хранит пароли"], "answer": 0},
+                    {"id": "q2", "question": "Детекция vs классификация?", "options": ["Детекция находит объект и его место", "Это одно и то же", "Классификация только для видео"], "answer": 0},
+                    {"id": "q3", "question": "Зачем аугментация?", "options": ["Улучшить обобщение модели", "Удалить метки", "Ускорить интернет"], "answer": 0},
+                    {"id": "q4", "question": "IoU измеряет?", "options": ["Совпадение масок/боксов", "Скорость CPU", "Длину промпта"], "answer": 0},
+                    {"id": "q5", "question": "Риск в продакшене CV?", "options": ["Смена освещения и ракурса", "Цвет кнопки", "Длина email"], "answer": 0},
+                ],
+            },
+            {
+                "id": "nlp-basics",
+                "title": "Обработка естественного языка",
+                "description": "Токены, эмбеддинги, классификация текста и поиск по смыслу.",
+                "overview": "Урок о NLP: как текст превращается в числа, какие задачи решают модели и как оценивать качество на русском и других языках.",
+                "sections": [
+                    {"title": "1) Токенизация", "text": "Текст делится на токены (слова, подслова). От этого зависят словарь модели и стоимость запроса.", "image": "images/nlp-basics.jpg"},
+                    {"title": "2) Эмбеддинги", "text": "Слова и предложения представляют векторами: близкие по смыслу — ближе в пространстве."},
+                    {"title": "3) Задачи NLP", "text": "Классификация, извлечение сущностей (NER), суммаризация, перевод, поиск, вопрос-ответ."},
+                    {"title": "4) Трансформеры", "text": "Архитектура внимания (attention) лежит в основе BERT, GPT и современных LLM."},
+                    {"title": "5) Оценка", "text": "BLEU для перевода, F1 для NER, ручная оценка для чат-ботов и RAG-систем."},
+                ],
+                "practice": "Спроектируйте классификатор отзывов: 3 класса, 5 признаков текста, метрика F1 и пример плохого отзыва для теста.",
+                "glossary": [
+                    {"term": "Token", "definition": "Единица текста для модели."},
+                    {"term": "Embedding", "definition": "Числовое представление слова или фразы."},
+                    {"term": "NER", "definition": "Распознавание имён, дат, организаций в тексте."},
+                ],
+                "steps": ["Очистите и нормализуйте текст.", "Выберите токенизатор.", "Обучите или возьмите готовую модель.", "Оцените на тесте.", "Проверьте омонимы и сленг."],
+                "quiz": [
+                    {"id": "q1", "question": "Эмбеддинг — это?", "options": ["Векторное представление текста", "Тип базы данных", "CSS-стиль"], "answer": 0},
+                    {"id": "q2", "question": "NER находит?", "options": ["Именованные сущности", "Только эмодзи", "Размер файла"], "answer": 0},
+                    {"id": "q3", "question": "Attention в трансформере?", "options": ["Связывает слова по контексту", "Удаляет GPU", "Шифрует диск"], "answer": 0},
+                    {"id": "q4", "question": "F1 полезен когда?", "options": ["Важен баланс precision и recall", "Нужен только дизайн", "Нет разметки"], "answer": 0},
+                    {"id": "q5", "question": "Токенизация влияет на?", "options": ["Стоимость и длину контекста LLM", "Цвет navbar", "Версию Python"], "answer": 0},
+                ],
+            },
+            {
+                "id": "ai-product",
+                "title": "ИИ в продукте",
+                "description": "Как встроить модель в UX: метрики, A/B-тесты и работа с пользователями.",
+                "overview": "Урок для тех, кто внедряет ИИ в реальный продукт: гипотезы, MVP, метрики бизнеса и итерации с обратной связью.",
+                "sections": [
+                    {"title": "1) От модели к фиче", "text": "Пользователю важен результат, а не F1-score. Определите сценарий: что человек делает до и после ИИ.", "image": "images/ai-product.jpg"},
+                    {"title": "2) MVP и гипотезы", "text": "Начните с узкого кейса, измеримой гипотезы и быстрого пилота на реальных пользователях."},
+                    {"title": "3) Метрики продукта", "text": "Сочетайте ML-метрики (точность) и продуктовые (конверсия, удержание, время до ответа)."},
+                    {"title": "4) A/B-тесты", "text": "Сравнивайте варианты на одинаковой аудитории; следите за статистической значимостью."},
+                    {"title": "5) Обратная связь", "text": "Кнопки «полезно/нет», разбор ошибок, дообучение и обновление промптов по логам."},
+                ],
+                "practice": "Опишите фичу «умные рекомендации» в приложении: гипотеза, 2 продуктовые метрики, риск и план отката.",
+                "glossary": [
+                    {"term": "MVP", "definition": "Минимальная версия продукта для проверки гипотезы."},
+                    {"term": "A/B test", "definition": "Сравнение двух вариантов на пользователях."},
+                    {"term": "North Star Metric", "definition": "Главная метрика ценности продукта."},
+                ],
+                "steps": ["Сформулируйте гипотезу.", "Определите north star и guardrail-метрики.", "Запустите пилот.", "Соберите фидбек.", "Итерируйте модель и UX."],
+                "quiz": [
+                    {"id": "q1", "question": "MVP в ИИ-продукте?", "options": ["Быстрая проверка ценности на узком кейсе", "Сразу максимальная модель", "Только презентация"], "answer": 0},
+                    {"id": "q2", "question": "Guardrail-метрика?", "options": ["Ограничение вреда (латентность, токсичность)", "Цвет логотипа", "Число слайдов"], "answer": 0},
+                    {"id": "q3", "question": "Зачем A/B?", "options": ["Сравнить варианты на данных", "Удалить пользователей", "Скрыть ошибки"], "answer": 0},
+                    {"id": "q4", "question": "Что важнее для UX?", "options": ["Понятный результат для пользователя", "Только размер модели", "Случайный ответ"], "answer": 0},
+                    {"id": "q5", "question": "Фидбек пользователей нужен для?", "options": ["Улучшения модели и сценариев", "Смены шрифта", "Отключения БД"], "answer": 0},
+                ],
+            },
         ],
         "en": [
             {
@@ -974,6 +1055,75 @@ def create_app() -> Flask:
                     {"id": "q3", "question": "What is a hallucination?", "options": ["Confident but wrong answer", "GPU driver bug", "Activation type"], "answer": 0},
                     {"id": "q4", "question": "What improves prompts?", "options": ["Clear role, format, constraints", "Random emojis only", "Empty input"], "answer": 0},
                     {"id": "q5", "question": "How to reduce production risk?", "options": ["Guardrails and human escalation", "Disable all logs", "One prompt for every domain"], "answer": 0},
+                ],
+            },
+            {
+                "id": "computer-vision",
+                "title": "Computer Vision",
+                "description": "How machines see images: from pixels to object detection.",
+                "overview": "Image classification, detection, segmentation, augmentation, and production pitfalls.",
+                "sections": [
+                    {"title": "1) Pixels to features", "text": "CNNs extract edges, textures, and objects layer by layer.", "image": "images/computer-vision.jpg"},
+                    {"title": "2) CV tasks", "text": "Classification, detection, segmentation, and video tracking."},
+                    {"title": "3) Data & augmentation", "text": "Rotations, crops, and lighting changes improve generalization."},
+                    {"title": "4) Metrics", "text": "Accuracy, IoU, mAP — especially on rare classes."},
+                    {"title": "5) Production", "text": "Latency, edge deployment, and changing capture conditions."},
+                ],
+                "practice": "Design a warehouse smart-camera system: input, task, metric, and two risks.",
+                "glossary": [{"term": "CNN", "definition": "Convolutional network for images."}, {"term": "IoU", "definition": "Overlap of prediction and ground truth."}, {"term": "Augmentation", "definition": "Synthetic training image variations."}],
+                "steps": ["Collect labeled data.", "Train a baseline.", "Add augmentation.", "Evaluate on hold-out.", "Test hard cases."],
+                "quiz": [
+                    {"id": "q1", "question": "CNNs are used to?", "options": ["Extract image features", "Compress JPEG only", "Store passwords"], "answer": 0},
+                    {"id": "q2", "question": "Detection differs from classification how?", "options": ["Finds object and location", "They are identical", "Only for video"], "answer": 0},
+                    {"id": "q3", "question": "Augmentation helps?", "options": ["Generalization", "Delete labels", "Speed up Wi-Fi"], "answer": 0},
+                    {"id": "q4", "question": "IoU measures?", "options": ["Mask/box overlap", "CPU speed", "Prompt length"], "answer": 0},
+                    {"id": "q5", "question": "CV production risk?", "options": ["Lighting and angle shift", "Button color", "Email length"], "answer": 0},
+                ],
+            },
+            {
+                "id": "nlp-basics",
+                "title": "Natural Language Processing",
+                "description": "Tokens, embeddings, text classification, and semantic search.",
+                "overview": "How text becomes numbers, core NLP tasks, transformers, and evaluation.",
+                "sections": [
+                    {"title": "1) Tokenization", "text": "Text splits into tokens; this drives vocabulary size and LLM cost.", "image": "images/nlp-basics.jpg"},
+                    {"title": "2) Embeddings", "text": "Similar meaning maps to nearby vectors."},
+                    {"title": "3) NLP tasks", "text": "Classification, NER, summarization, translation, QA, search."},
+                    {"title": "4) Transformers", "text": "Attention powers BERT, GPT, and modern LLMs."},
+                    {"title": "5) Evaluation", "text": "BLEU, F1 for NER, human review for chatbots and RAG."},
+                ],
+                "practice": "Design a review classifier: 3 classes, 5 text features, F1 metric, and one hard test example.",
+                "glossary": [{"term": "Token", "definition": "Text unit for the model."}, {"term": "Embedding", "definition": "Numeric text representation."}, {"term": "NER", "definition": "Named entity recognition."}],
+                "steps": ["Clean text.", "Pick tokenizer.", "Train or use a pretrained model.", "Evaluate on test.", "Check slang and ambiguity."],
+                "quiz": [
+                    {"id": "q1", "question": "Embedding is?", "options": ["Vector text representation", "Database type", "CSS style"], "answer": 0},
+                    {"id": "q2", "question": "NER finds?", "options": ["Named entities", "Only emojis", "File size"], "answer": 0},
+                    {"id": "q3", "question": "Attention in transformers?", "options": ["Links words by context", "Removes GPU", "Encrypts disk"], "answer": 0},
+                    {"id": "q4", "question": "F1 is useful when?", "options": ["Precision-recall balance matters", "Design only", "No labels"], "answer": 0},
+                    {"id": "q5", "question": "Tokenization affects?", "options": ["LLM cost and context length", "Navbar color", "Python version"], "answer": 0},
+                ],
+            },
+            {
+                "id": "ai-product",
+                "title": "AI in Product",
+                "description": "Shipping models in UX: metrics, A/B tests, and user feedback.",
+                "overview": "Hypotheses, MVP, business metrics, and iteration loops for real AI features.",
+                "sections": [
+                    {"title": "1) Model to feature", "text": "Users care about outcomes, not F1 alone.", "image": "images/ai-product.jpg"},
+                    {"title": "2) MVP", "text": "Start narrow with a measurable hypothesis and real users."},
+                    {"title": "3) Product metrics", "text": "Combine ML metrics with conversion, retention, and latency."},
+                    {"title": "4) A/B tests", "text": "Compare variants on the same audience with significance checks."},
+                    {"title": "5) Feedback loops", "text": "Thumbs up/down, error review, prompt and model updates."},
+                ],
+                "practice": "Describe a smart recommendations feature: hypothesis, 2 product metrics, risk, rollback plan.",
+                "glossary": [{"term": "MVP", "definition": "Minimum product to test a hypothesis."}, {"term": "A/B test", "definition": "Compare two variants on users."}, {"term": "North Star", "definition": "Primary value metric."}],
+                "steps": ["Write hypothesis.", "Define north star and guardrails.", "Run pilot.", "Collect feedback.", "Iterate model and UX."],
+                "quiz": [
+                    {"id": "q1", "question": "AI MVP means?", "options": ["Fast value test on narrow case", "Largest model first", "Slides only"], "answer": 0},
+                    {"id": "q2", "question": "Guardrail metric?", "options": ["Limits harm (latency, toxicity)", "Logo color", "Slide count"], "answer": 0},
+                    {"id": "q3", "question": "Why A/B?", "options": ["Compare variants with data", "Delete users", "Hide errors"], "answer": 0},
+                    {"id": "q4", "question": "UX priority?", "options": ["Clear user outcome", "Model size only", "Random answers"], "answer": 0},
+                    {"id": "q5", "question": "User feedback helps?", "options": ["Improve models and flows", "Change fonts", "Disable DB"], "answer": 0},
                 ],
             },
         ],
@@ -1056,6 +1206,75 @@ def create_app() -> Flask:
                     {"id": "q5", "question": "Production тәуекелін қалай азайту?", "options": ["Guardrails және адамға эскалация", "Барлық логты өшіру", "Бір промпт барлық доменге"], "answer": 0},
                 ],
             },
+            {
+                "id": "computer-vision",
+                "title": "Компьютерлік көру",
+                "description": "Машина кескінді қалай «көреді»: пиксельден объектіге.",
+                "overview": "Классификация, детекция, сегментация, аугментация және production тәуекелдері.",
+                "sections": [
+                    {"title": "1) Пиксельден белгіге", "text": "CNN контур, текстура және объектілерді шығарады.", "image": "images/computer-vision.jpg"},
+                    {"title": "2) CV міндеттері", "text": "Классификация, детекция, сегментация, бейне трекинг."},
+                    {"title": "3) Аугментация", "text": "Айналдыру, кесу, жарық өзгерісі — модельдің тұрақтылығы."},
+                    {"title": "4) Метрикалар", "text": "Accuracy, IoU, mAP."},
+                    {"title": "5) Production", "text": "Кідіріс, edge және түсірілім жағдайлары."},
+                ],
+                "practice": "Қойма камерасы жүйесін сипаттаңыз: кіріс, міндет, метрика, 2 тәуекел.",
+                "glossary": [{"term": "CNN", "definition": "Кескінге арналған желілік."}, {"term": "IoU", "definition": "Болжам мен эталон қиылысы."}, {"term": "Augmentation", "definition": "Жасанды кескін кеңейту."}],
+                "steps": ["Дерек жина.", "Baseline оқыту.", "Аугментация.", "Тест бағалау.", "Қиын кейстер."],
+                "quiz": [
+                    {"id": "q1", "question": "CNN не үшін?", "options": ["Кескін белгілерін шығару", "Тек JPEG", "Құпиясөз"], "answer": 0},
+                    {"id": "q2", "question": "Детекция?", "options": ["Орын мен объект", "Бірдей", "Тек бейне"], "answer": 0},
+                    {"id": "q3", "question": "Аугментация?", "options": ["Жалпылау", "Метка жою", "Wi-Fi"], "answer": 0},
+                    {"id": "q4", "question": "IoU?", "options": ["Қиылыс", "CPU", "Промпт"], "answer": 0},
+                    {"id": "q5", "question": "Production тәуекел?", "options": ["Жарық өзгерісі", "Түс", "Email"], "answer": 0},
+                ],
+            },
+            {
+                "id": "nlp-basics",
+                "title": "Табиғи тілді өңдеу",
+                "description": "Токен, эмбеддинг, мәтін классификациясы.",
+                "overview": "Мәтінді сандарға айналдыру, NLP міндеттері, трансформер, бағалау.",
+                "sections": [
+                    {"title": "1) Токенизация", "text": "Мәтін токендерге бөлінеді.", "image": "images/nlp-basics.jpg"},
+                    {"title": "2) Эмбеддинг", "text": "Мағына жақын векторлар жақын."},
+                    {"title": "3) NLP міндеттері", "text": "Классификация, NER, қысқарту, аударма."},
+                    {"title": "4) Трансформер", "text": "Attention — BERT, GPT негізі."},
+                    {"title": "5) Бағалау", "text": "BLEU, F1, адам review."},
+                ],
+                "practice": "Пікір классификаторы: 3 класс, 5 белгі, F1.",
+                "glossary": [{"term": "Token", "definition": "Мәтін бірлігі."}, {"term": "Embedding", "definition": "Векторлық көрініс."}, {"term": "NER", "definition": "Атау тану."}],
+                "steps": ["Мәтін тазала.", "Токенизатор.", "Модель.", "Тест.", "Сленг тексер."],
+                "quiz": [
+                    {"id": "q1", "question": "Эмбеддинг?", "options": ["Вектор", "БД", "CSS"], "answer": 0},
+                    {"id": "q2", "question": "NER?", "options": ["Атаулар", "Эмодзи", "Файл"], "answer": 0},
+                    {"id": "q3", "question": "Attention?", "options": ["Контекст байланысы", "GPU жою", "Шифр"], "answer": 0},
+                    {"id": "q4", "question": "F1?", "options": ["Precision-recall", "Дизайн", "Метка жоқ"], "answer": 0},
+                    {"id": "q5", "question": "Токенизация?", "options": ["LLM құны", "Түс", "Python"], "answer": 0},
+                ],
+            },
+            {
+                "id": "ai-product",
+                "title": "Өнімдегі ЖИ",
+                "description": "Модельді UX-ке енгізу: метрика, A/B, фидбек.",
+                "overview": "Гипотеза, MVP, бизнес метрикалары, итерация.",
+                "sections": [
+                    {"title": "1) Модель → фича", "text": "Пайдаланушыға нәтиже маңызды.", "image": "images/ai-product.jpg"},
+                    {"title": "2) MVP", "text": "Тар кейс, өлшенетін гипотеза."},
+                    {"title": "3) Метрикалар", "text": "ML + конверсия, retention."},
+                    {"title": "4) A/B", "text": "Вариант салыстыру."},
+                    {"title": "5) Фидбек", "text": "Лог, review, жаңарту."},
+                ],
+                "practice": "Ұсыныс фичасы: гипотеза, 2 метрика, тәуекел.",
+                "glossary": [{"term": "MVP", "definition": "Минималды өнім."}, {"term": "A/B", "definition": "Салыстыру тесті."}, {"term": "North Star", "definition": "Негізгі метрика."}],
+                "steps": ["Гипотеза.", "Метрика.", "Пилот.", "Фидбек.", "Итерация."],
+                "quiz": [
+                    {"id": "q1", "question": "MVP?", "options": ["Тез тексеру", "Ең үлкен модель", "Слайд"], "answer": 0},
+                    {"id": "q2", "question": "Guardrail?", "options": ["Зиян шектеу", "Логотип", "Слайд"], "answer": 0},
+                    {"id": "q3", "question": "A/B?", "options": ["Дерекпен салыстыру", "Жою", "Жасыру"], "answer": 0},
+                    {"id": "q4", "question": "UX?", "options": ["Түсінікті нәтиже", "Тек модель", "Кездейсоқ"], "answer": 0},
+                    {"id": "q5", "question": "Фидбек?", "options": ["Жақсарту", "Қаріп", "БД өшіру"], "answer": 0},
+                ],
+            },
         ],
     }
 
@@ -1066,6 +1285,20 @@ def create_app() -> Flask:
         "data-foundations": "images/data-foundations.jpg",
         "ethics-safety": "images/ethics-safety.jpg",
         "gen-ai-llm": "images/gen-ai-llm.jpg",
+        "computer-vision": "images/computer-vision.jpg",
+        "nlp-basics": "images/nlp-basics.jpg",
+        "ai-product": "images/ai-product.jpg",
+    }
+    lesson_image_fallbacks = {
+        "intro-ai": "images/intro-ai.svg",
+        "ml-basics": "images/ml-basics.svg",
+        "neural-basics": "images/neural-basics.svg",
+        "data-foundations": "images/data-foundations.svg",
+        "ethics-safety": "images/ethics-safety.svg",
+        "gen-ai-llm": "images/gen-ai-llm.svg",
+        "computer-vision": "images/computer-vision.svg",
+        "nlp-basics": "images/nlp-basics.svg",
+        "ai-product": "images/ai-product.svg",
     }
 
     for lang, entries in extra_lessons.items():
@@ -1076,7 +1309,11 @@ def create_app() -> Flask:
             extension = deep_lessons.get(lang, {}).get(lesson["id"])
             if extension:
                 lesson.update(extension)
-            lesson["image"] = lesson_images.get(lesson["id"], "images/intro-ai.jpg")
+            lesson_id = lesson["id"]
+            lesson["image"] = lesson_images.get(lesson_id, "images/intro-ai.jpg")
+            lesson["image_fallback"] = lesson_image_fallbacks.get(
+                lesson_id, "images/intro-ai.svg"
+            )
 
     lesson_index = {
         lang: {lesson["id"]: lesson for lesson in lessons}

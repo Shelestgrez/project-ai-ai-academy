@@ -11,7 +11,7 @@
 <div class="row g-4">
     <div class="col-lg-8">
         <section class="card border-0 shadow-sm mb-4 overflow-hidden">
-            <img src="{{ url_for('static', filename=lesson.image) }}" class="lesson-hero-image" alt="{{ lesson.title }}">
+            <img src="{{ url_for('static', filename=lesson.image) }}" class="lesson-hero-image" alt="{{ lesson.title }}" onerror="this.onerror=null;this.src='{{ url_for('static', filename=lesson.image_fallback) }}';">
         </section>
 
         <section class="card border-0 shadow-sm mb-4 lesson-glass">

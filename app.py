@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import random
 from functools import wraps
 from pathlib import Path
 from typing import Dict, List
@@ -9,6 +10,20 @@ from flask import Flask, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from db_support import INTEGRITY_ERRORS, attach_database, get_db, init_schema
+from learning import (
+    add_xp,
+    apply_lesson_meta,
+    compute_achievements,
+    ensure_user_stats,
+    get_bookmarks,
+    get_note,
+    level_from_xp,
+    next_lesson_id,
+    save_note,
+    toggle_bookmark,
+    touch_streak,
+    xp_to_next_level,
+)
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -84,6 +99,49 @@ def create_app() -> Flask:
             "message_user_exists": "Пользователь с таким email уже существует.",
             "message_login_error": "Неверный email или пароль.",
             "not_found": "Урок не найден.",
+            "stats_xp": "Опыт",
+            "stats_level": "Уровень",
+            "stats_streak": "Серия дней",
+            "stats_achievements": "Достижения",
+            "minutes_label": "мин",
+            "level_beginner": "Начальный",
+            "level_intermediate": "Средний",
+            "track_fundamentals": "Основы",
+            "track_advanced": "Продвинутый",
+            "track_practice": "Практика",
+            "search_lessons": "Поиск урока...",
+            "filter_all": "Все",
+            "filter_done": "Пройденные",
+            "filter_pending": "В процессе",
+            "filter_bookmarked": "Закладки",
+            "continue_learning": "Продолжить обучение",
+            "continue_cta": "Открыть следующий урок",
+            "bookmark": "В закладки",
+            "bookmarked": "В закладках",
+            "notes_title": "Мои заметки",
+            "notes_placeholder": "Запишите главное из урока...",
+            "notes_save": "Сохранить заметку",
+            "notes_saved": "Заметка сохранена",
+            "flashcards_title": "Карточки терминов",
+            "flashcards_hint": "Нажмите на карточку, чтобы увидеть определение",
+            "steps_check_title": "Чек-лист шагов",
+            "daily_challenge": "Вопрос дня",
+            "tab_content": "Урок",
+            "tab_cards": "Карточки",
+            "tab_notes": "Заметки",
+            "dark_mode": "Тёмная тема",
+            "light_mode": "Светлая тема",
+            "ach_first_step": "Первый шаг",
+            "ach_quiz_ace": "Идеальный тест",
+            "ach_half_way": "Полпути",
+            "ach_graduate": "Выпускник",
+            "ach_xp_500": "500 XP",
+            "ach_streak_3": "Серия 3 дня",
+            "ach_collector": "Коллекционер",
+            "xp_gained": "Получено XP",
+            "all_lessons_done": "Все уроки пройдены — отличная работа!",
+            "daily_ok": "Верно! Так держать.",
+            "daily_fail": "Неверно. Откройте урок и повторите тему.",
         },
         "en": {
             "app_title": "AI Academy",
@@ -137,6 +195,49 @@ def create_app() -> Flask:
             "message_user_exists": "A user with this email already exists.",
             "message_login_error": "Invalid email or password.",
             "not_found": "Lesson not found.",
+            "stats_xp": "XP",
+            "stats_level": "Level",
+            "stats_streak": "Day streak",
+            "stats_achievements": "Achievements",
+            "minutes_label": "min",
+            "level_beginner": "Beginner",
+            "level_intermediate": "Intermediate",
+            "track_fundamentals": "Fundamentals",
+            "track_advanced": "Advanced",
+            "track_practice": "Practice",
+            "search_lessons": "Search lessons...",
+            "filter_all": "All",
+            "filter_done": "Completed",
+            "filter_pending": "In progress",
+            "filter_bookmarked": "Bookmarks",
+            "continue_learning": "Continue learning",
+            "continue_cta": "Open next lesson",
+            "bookmark": "Bookmark",
+            "bookmarked": "Bookmarked",
+            "notes_title": "My notes",
+            "notes_placeholder": "Write your key takeaways...",
+            "notes_save": "Save note",
+            "notes_saved": "Note saved",
+            "flashcards_title": "Term flashcards",
+            "flashcards_hint": "Tap a card to reveal the definition",
+            "steps_check_title": "Step checklist",
+            "daily_challenge": "Daily challenge",
+            "tab_content": "Lesson",
+            "tab_cards": "Cards",
+            "tab_notes": "Notes",
+            "dark_mode": "Dark mode",
+            "light_mode": "Light mode",
+            "ach_first_step": "First step",
+            "ach_quiz_ace": "Quiz ace",
+            "ach_half_way": "Halfway",
+            "ach_graduate": "Graduate",
+            "ach_xp_500": "500 XP",
+            "ach_streak_3": "3-day streak",
+            "ach_collector": "Collector",
+            "xp_gained": "XP earned",
+            "all_lessons_done": "All lessons completed — great job!",
+            "daily_ok": "Correct! Keep going.",
+            "daily_fail": "Not quite. Review the lesson and try again.",
         },
         "kk": {
             "app_title": "AI Academy",
@@ -190,6 +291,77 @@ def create_app() -> Flask:
             "message_user_exists": "Бұл email-пен қолданушы бар.",
             "message_login_error": "Email немесе құпиясөз қате.",
             "not_found": "Сабақ табылмады.",
+            "stats_xp": "Тәжірибе",
+            "stats_level": "Деңгей",
+            "stats_streak": "Күн сериясы",
+            "stats_achievements": "Жетістіктер",
+            "minutes_label": "мин",
+            "level_beginner": "Бастапқы",
+            "level_intermediate": "Орта",
+            "track_fundamentals": "Негіздер",
+            "track_advanced": "Күрделі",
+            "track_practice": "Тәжірибе",
+            "search_lessons": "Сабақ іздеу...",
+            "filter_all": "Барлығы",
+            "filter_done": "Өтілген",
+            "filter_pending": "Процесте",
+            "filter_bookmarked": "Бетбелгілер",
+            "continue_learning": "Оқуды жалғастыру",
+            "continue_cta": "Келесі сабақ",
+            "bookmark": "Бетбелгі",
+            "bookmarked": "Сақталды",
+            "notes_title": "Жазбаларым",
+            "notes_placeholder": "Негізгі ойларыңызды жазыңыз...",
+            "notes_save": "Сақтау",
+            "notes_saved": "Сақталды",
+            "flashcards_title": "Термин карточкалары",
+            "flashcards_hint": "Анықтаманы көру үшін басыңыз",
+            "steps_check_title": "Қадам тізімі",
+            "daily_challenge": "Күн сұрағы",
+            "tab_content": "Сабақ",
+            "tab_cards": "Карточкалар",
+            "tab_notes": "Жазбалар",
+            "dark_mode": "Қараңғы тема",
+            "light_mode": "Жарық тема",
+            "ach_first_step": "Бірінші қадам",
+            "ach_quiz_ace": "Тамаша тест",
+            "ach_half_way": "Жарты жол",
+            "ach_graduate": "Түлек",
+            "ach_xp_500": "500 XP",
+            "ach_streak_3": "3 күн сериясы",
+            "ach_collector": "Жинақтаушы",
+            "xp_gained": "XP алынды",
+            "all_lessons_done": "Барлық сабақ өтілді!",
+        },
+    }
+
+    achievement_labels = {
+        "ru": {
+            "first_step": "ach_first_step",
+            "quiz_ace": "ach_quiz_ace",
+            "half_way": "ach_half_way",
+            "graduate": "ach_graduate",
+            "xp_500": "ach_xp_500",
+            "streak_3": "ach_streak_3",
+            "collector": "ach_collector",
+        },
+        "en": {
+            "first_step": "ach_first_step",
+            "quiz_ace": "ach_quiz_ace",
+            "half_way": "ach_half_way",
+            "graduate": "ach_graduate",
+            "xp_500": "ach_xp_500",
+            "streak_3": "ach_streak_3",
+            "collector": "ach_collector",
+        },
+        "kk": {
+            "first_step": "ach_first_step",
+            "quiz_ace": "ach_quiz_ace",
+            "half_way": "ach_half_way",
+            "graduate": "ach_graduate",
+            "xp_500": "ach_xp_500",
+            "streak_3": "ach_streak_3",
+            "collector": "ach_collector",
         },
     }
 
@@ -1314,6 +1486,7 @@ def create_app() -> Flask:
             lesson["image_fallback"] = lesson_image_fallbacks.get(
                 lesson_id, "images/intro-ai.svg"
             )
+            apply_lesson_meta(lesson)
 
     lesson_index = {
         lang: {lesson["id"]: lesson for lesson in lessons}
@@ -1420,10 +1593,11 @@ def create_app() -> Flask:
         session.pop("user_name", None)
         return redirect(url_for("index", lang=lang))
 
-    @app.route("/dashboard")
-    @login_required
-    def dashboard():
-        lang = get_lang()
+    def achievement_name(ach_id: str, lang: str) -> str:
+        key = achievement_labels.get(lang, achievement_labels["ru"]).get(ach_id, ach_id)
+        return t(key, lang)
+
+    def build_lesson_rows(lang: str, user_id: int) -> tuple:
         db = get_db()
         lesson_ids = [lesson["id"] for lesson in lesson_catalog[lang]]
         rows = db.execute(
@@ -1432,16 +1606,10 @@ def create_app() -> Flask:
             FROM progress
             WHERE user_id = ?
             """,
-            (session["user_id"],),
+            (user_id,),
         ).fetchall()
         progress_map = {row["lesson_id"]: row for row in rows}
-        completed_count = sum(
-            1
-            for lesson_id in lesson_ids
-            if progress_map.get(lesson_id) and bool(progress_map[lesson_id]["completed"])
-        )
-        progress_percent = int((completed_count / len(lesson_ids)) * 100) if lesson_ids else 0
-
+        bookmarked = get_bookmarks(db, user_id)
         lessons = []
         for lesson in lesson_catalog[lang]:
             row = progress_map.get(lesson["id"])
@@ -1451,8 +1619,55 @@ def create_app() -> Flask:
                     "completed": bool(row["completed"]) if row else False,
                     "quiz_score": int(row["quiz_score"]) if row else 0,
                     "total_questions": int(row["total_questions"]) if row else len(lesson["quiz"]),
+                    "bookmarked": lesson["id"] in bookmarked,
                 }
             )
+        completed_count = sum(1 for lesson in lessons if lesson["completed"])
+        total = len(lesson_ids)
+        progress_percent = int((completed_count / total) * 100) if total else 0
+        return lessons, progress_map, completed_count, progress_percent, bookmarked
+
+    @app.route("/dashboard")
+    @login_required
+    def dashboard():
+        lang = get_lang()
+        user_id = session["user_id"]
+        db = get_db()
+        stats = touch_streak(db, user_id)
+        xp = int(stats.get("xp") or 0)
+        streak = int(stats.get("streak_days") or 0)
+        lessons, progress_map, completed_count, progress_percent, bookmarked = build_lesson_rows(
+            lang, user_id
+        )
+        achievements = compute_achievements(
+            completed_count,
+            len(lessons),
+            xp,
+            streak,
+            progress_map,
+            len(bookmarked),
+        )
+        for ach in achievements:
+            ach["name"] = achievement_name(str(ach["id"]), lang)
+
+        continue_id = next_lesson_id(lessons)
+        continue_lesson = next(
+            (lesson for lesson in lessons if lesson["id"] == continue_id), None
+        )
+
+        daily = None
+        if lessons:
+            pool = [lesson for lesson in lessons if lesson.get("quiz")]
+            if pool:
+                pick = random.choice(pool)
+                question = random.choice(pick["quiz"])
+                daily = {
+                    "lesson_id": pick["id"],
+                    "lesson_title": pick["title"],
+                    "question": question["question"],
+                    "options": question["options"],
+                    "answer": question["answer"],
+                }
 
         return render_template(
             "dashboard.html",
@@ -1460,6 +1675,14 @@ def create_app() -> Flask:
             user_name=session.get("user_name", ""),
             lessons=lessons,
             progress_percent=progress_percent,
+            xp=xp,
+            level=level_from_xp(xp),
+            xp_next=xp_to_next_level(xp),
+            streak=streak,
+            achievements=achievements,
+            continue_lesson=continue_lesson,
+            daily_challenge=daily,
+            notes_saved=request.args.get("notes_saved") == "1",
         )
 
     @app.route("/lesson/<lesson_id>")
@@ -1481,6 +1704,10 @@ def create_app() -> Flask:
         ).fetchone()
         score = int(saved["quiz_score"]) if saved else 0
         total = int(saved["total_questions"]) if saved else len(lesson["quiz"])
+        user_id = session["user_id"]
+        bookmarked = lesson_id in get_bookmarks(db, user_id)
+        note = get_note(db, user_id, lesson_id)
+        xp_gain = request.args.get("xp_gain", "")
 
         return render_template(
             "lesson.html",
@@ -1490,6 +1717,9 @@ def create_app() -> Flask:
             score=score,
             total=total,
             completed=bool(saved["completed"]) if saved else False,
+            bookmarked=bookmarked,
+            note=note,
+            xp_gain=xp_gain,
         )
 
     @app.route("/quiz/<lesson_id>", methods=["POST"])
@@ -1512,6 +1742,13 @@ def create_app() -> Flask:
         result_message = f"{t('quiz_result', lang)}: {correct}/{total_questions}. {feedback}"
 
         db = get_db()
+        user_id = session["user_id"]
+        was_done = db.execute(
+            "SELECT completed FROM progress WHERE user_id = ? AND lesson_id = ?",
+            (user_id, lesson_id),
+        ).fetchone()
+        already_completed = bool(was_done and was_done["completed"])
+
         db.execute(
             """
             INSERT INTO progress (user_id, lesson_id, completed, quiz_score, total_questions)
@@ -1522,9 +1759,17 @@ def create_app() -> Flask:
                 total_questions = excluded.total_questions,
                 updated_at = CURRENT_TIMESTAMP
             """,
-            (session["user_id"], lesson_id, 1 if passed else 0, correct, total_questions),
+            (user_id, lesson_id, 1 if passed else 0, correct, total_questions),
         )
         db.commit()
+
+        xp_gain = correct * 15
+        if passed and not already_completed:
+            xp_gain += int(lesson.get("xp_reward", 100))
+        elif passed:
+            xp_gain += 25
+        touch_streak(db, user_id)
+        add_xp(db, user_id, xp_gain)
 
         return redirect(
             url_for(
@@ -1532,6 +1777,7 @@ def create_app() -> Flask:
                 lesson_id=lesson_id,
                 lang=lang,
                 result_message=result_message,
+                xp_gain=xp_gain,
             )
         )
 
@@ -1540,6 +1786,13 @@ def create_app() -> Flask:
     def complete_lesson(lesson_id: str):
         lang = get_lang()
         db = get_db()
+        user_id = session["user_id"]
+        was_done = db.execute(
+            "SELECT completed FROM progress WHERE user_id = ? AND lesson_id = ?",
+            (user_id, lesson_id),
+        ).fetchone()
+        already_completed = bool(was_done and was_done["completed"])
+
         db.execute(
             """
             INSERT INTO progress (user_id, lesson_id, completed, quiz_score, total_questions)
@@ -1548,10 +1801,49 @@ def create_app() -> Flask:
                 completed = 1,
                 updated_at = CURRENT_TIMESTAMP
             """,
-            (session["user_id"], lesson_id),
+            (user_id, lesson_id),
         )
         db.commit()
+        xp_gain = 0
+        if not already_completed:
+            lesson = lesson_index[lang].get(lesson_id)
+            xp_gain = 40
+            if lesson:
+                xp_gain = max(40, int(lesson.get("xp_reward", 100)) // 2)
+            touch_streak(db, user_id)
+            add_xp(db, user_id, xp_gain)
         return redirect(url_for("dashboard", lang=lang))
+
+    @app.route("/bookmark/<lesson_id>", methods=["POST"])
+    @login_required
+    def bookmark_lesson(lesson_id: str):
+        lang = get_lang()
+        if lesson_id not in lesson_index[lang]:
+            return redirect(url_for("dashboard", lang=lang))
+        db = get_db()
+        toggle_bookmark(db, session["user_id"], lesson_id)
+        next_page = request.form.get("next", "dashboard")
+        if next_page == "lesson":
+            return redirect(url_for("lesson_detail", lesson_id=lesson_id, lang=lang))
+        return redirect(url_for("dashboard", lang=lang))
+
+    @app.route("/notes/<lesson_id>", methods=["POST"])
+    @login_required
+    def save_lesson_note(lesson_id: str):
+        lang = get_lang()
+        if lesson_id not in lesson_index[lang]:
+            return redirect(url_for("dashboard", lang=lang))
+        content = request.form.get("content", "")
+        db = get_db()
+        save_note(db, session["user_id"], lesson_id, content)
+        return redirect(
+            url_for(
+                "lesson_detail",
+                lesson_id=lesson_id,
+                lang=lang,
+                notes_saved=1,
+            )
+        )
 
     return app
 

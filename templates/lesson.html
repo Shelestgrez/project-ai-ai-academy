@@ -1,103 +1,160 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="d-flex justify-content-between align-items-start gap-3 mb-4 flex-wrap lesson-header">
+<section class="d-flex justify-content-between align-items-start gap-3 mb-3 flex-wrap lesson-header">
     <div>
         <h2 class="fw-bold mb-1">{{ lesson.title }}</h2>
-        <p class="text-secondary mb-0">{{ t('lesson_title') }}</p>
+        <div class="d-flex flex-wrap gap-2 mb-2">
+            <span class="badge text-bg-primary">
+                {% if lesson.level == 'intermediate' %}{{ t('level_intermediate') }}{% else %}{{ t('level_beginner') }}{% endif %}
+            </span>
+            <span class="badge text-bg-secondary">⏱ {{ lesson.minutes }} {{ t('minutes_label') }}</span>
+            <span class="badge text-bg-success">+{{ lesson.xp_reward }} XP</span>
+        </div>
+        <p class="text-secondary mb-0">{{ lesson.description }}</p>
     </div>
-    <a class="btn btn-outline-secondary" href="{{ url_for('dashboard', lang=lang) }}">{{ t('back_dashboard') }}</a>
+    <div class="d-flex flex-wrap gap-2">
+        <form method="post" action="{{ url_for('bookmark_lesson', lesson_id=lesson.id, lang=lang) }}">
+            <input type="hidden" name="next" value="lesson">
+            <button type="submit" class="btn btn-outline-warning btn-sm">
+                {% if bookmarked %}★ {{ t('bookmarked') }}{% else %}☆ {{ t('bookmark') }}{% endif %}
+            </button>
+        </form>
+        <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('dashboard', lang=lang) }}">{{ t('back_dashboard') }}</a>
+    </div>
 </section>
 
-<div class="row g-4">
-    <div class="col-lg-8">
-        <section class="card border-0 shadow-sm mb-4 overflow-hidden">
-            <img src="{{ url_for('static', filename=lesson.image) }}" class="lesson-hero-image" alt="{{ lesson.title }}" onerror="this.onerror=null;this.src='{{ url_for('static', filename=lesson.image_fallback) }}';">
-        </section>
+{% if xp_gain %}
+<div class="alert alert-info border-0 shadow-sm">+{{ xp_gain }} {{ t('xp_gained') }}</div>
+{% endif %}
 
-        <section class="card border-0 shadow-sm mb-4 lesson-glass">
-            <div class="card-body p-4">
-                <h3 class="h5 mb-3">{{ t('lesson_overview') }}</h3>
-                <p class="mb-0 text-secondary">{{ lesson.overview }}</p>
-            </div>
-        </section>
+<ul class="nav nav-pills mb-4 lesson-tabs" role="tablist">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-content" type="button">{{ t('tab_content') }}</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-cards" type="button">{{ t('tab_cards') }}</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-notes" type="button">{{ t('tab_notes') }}</button></li>
+</ul>
 
-        <section class="card border-0 shadow-sm mb-4">
-            <div class="card-body p-4">
-                <h3 class="h5 mb-3">{{ t('lesson_sections') }}</h3>
-                <div class="vstack gap-3">
-                    {% for section in lesson.sections %}
-                        <article class="section-block">
-                            {% if section.image %}
-                                <img src="{{ url_for('static', filename=section.image) }}" class="section-image mb-3" alt="{{ section.title }}">
-                            {% endif %}
-                            <h4 class="h6 fw-bold mb-2">{{ section.title }}</h4>
-                            <p class="mb-0 text-secondary">{{ section.text }}</p>
-                        </article>
-                    {% endfor %}
-                </div>
-            </div>
-        </section>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="tab-content">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <section class="card border-0 shadow-sm mb-4 overflow-hidden">
+                    <img src="{{ url_for('static', filename=lesson.image) }}" class="lesson-hero-image" alt="{{ lesson.title }}" onerror="this.onerror=null;this.src='{{ url_for('static', filename=lesson.image_fallback) }}';">
+                </section>
 
-        <section class="card border-0 shadow-sm mb-4">
-            <div class="card-body p-4">
-                <h3 class="h5 mb-3">{{ t('lesson_steps') }}</h3>
-                <ol class="steps-list mb-0">
-                    {% for step in lesson.steps %}
-                        <li>{{ step }}</li>
-                    {% endfor %}
-                </ol>
-            </div>
-        </section>
-
-        <section class="card border-0 shadow-sm">
-            <div class="card-body p-4">
-                <h3 class="h5 mb-3">{{ t('quiz_title') }}</h3>
-                {% if result_message %}
-                    <div class="alert {% if completed %}alert-success{% else %}alert-warning{% endif %}">
-                        {{ result_message }}
+                <section class="card border-0 shadow-sm mb-4 lesson-glass">
+                    <div class="card-body p-4">
+                        <h3 class="h5 mb-3">{{ t('lesson_overview') }}</h3>
+                        <p class="mb-0 text-secondary">{{ lesson.overview }}</p>
                     </div>
-                {% endif %}
-                <form method="post" action="{{ url_for('submit_quiz', lesson_id=lesson.id, lang=lang) }}">
-                    {% for question in lesson.quiz %}
-                        <fieldset class="mb-4 quiz-card">
-                            <legend class="h6">{{ loop.index }}. {{ question.question }}</legend>
-                            {% for option in question.options %}
-                                <div class="form-check mb-1">
-                                    <input class="form-check-input" type="radio" name="{{ question.id }}" id="{{ question.id }}_{{ loop.index0 }}" value="{{ loop.index0 }}" required>
-                                    <label class="form-check-label" for="{{ question.id }}_{{ loop.index0 }}">
-                                        {{ option }}
-                                    </label>
-                                </div>
+                </section>
+
+                <section class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h3 class="h5 mb-3">{{ t('lesson_sections') }}</h3>
+                        <div class="vstack gap-3">
+                            {% for section in lesson.sections %}
+                                <article class="section-block">
+                                    {% if section.image %}
+                                        <img src="{{ url_for('static', filename=section.image) }}" class="section-image mb-3" alt="{{ section.title }}">
+                                    {% endif %}
+                                    <h4 class="h6 fw-bold mb-2">{{ section.title }}</h4>
+                                    <p class="mb-0 text-secondary">{{ section.text }}</p>
+                                </article>
                             {% endfor %}
-                        </fieldset>
-                    {% endfor %}
-                    <button class="btn btn-primary btn-lg" type="submit">{{ t('quiz_submit') }}</button>
-                </form>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h3 class="h5 mb-3">{{ t('steps_check_title') }}</h3>
+                        <ul class="list-unstyled steps-checklist mb-0">
+                            {% for step in lesson.steps %}
+                                <li class="form-check mb-2" data-step-index="{{ loop.index0 }}">
+                                    <input class="form-check-input" type="checkbox" id="step_{{ loop.index0 }}">
+                                    <label class="form-check-label" for="step_{{ loop.index0 }}">{{ step }}</label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="h5 mb-3">{{ t('quiz_title') }}</h3>
+                        {% if result_message %}
+                            <div class="alert {% if completed %}alert-success{% else %}alert-warning{% endif %}">{{ result_message }}</div>
+                        {% endif %}
+                        <form method="post" action="{{ url_for('submit_quiz', lesson_id=lesson.id, lang=lang) }}">
+                            {% for question in lesson.quiz %}
+                                <fieldset class="mb-4 quiz-card">
+                                    <legend class="h6">{{ loop.index }}. {{ question.question }}</legend>
+                                    {% for option in question.options %}
+                                        <div class="form-check mb-1">
+                                            <input class="form-check-input" type="radio" name="{{ question.id }}" id="{{ question.id }}_{{ loop.index0 }}" value="{{ loop.index0 }}" required>
+                                            <label class="form-check-label" for="{{ question.id }}_{{ loop.index0 }}">{{ option }}</label>
+                                        </div>
+                                    {% endfor %}
+                                </fieldset>
+                            {% endfor %}
+                            <button class="btn btn-primary btn-lg" type="submit">{{ t('quiz_submit') }}</button>
+                        </form>
+                        {% if not completed %}
+                        <form method="post" action="{{ url_for('complete_lesson', lesson_id=lesson.id, lang=lang) }}" class="mt-3">
+                            <button class="btn btn-outline-success" type="submit">{{ t('complete_lesson') }}</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </section>
             </div>
-        </section>
+
+            <div class="col-lg-4">
+                <section class="card border-0 shadow-sm mb-4 sticky-side">
+                    <div class="card-body">
+                        <h3 class="h6 text-uppercase text-muted mb-3">{{ t('practice_title') }}</h3>
+                        <p class="mb-0">{{ lesson.practice }}</p>
+                    </div>
+                </section>
+            </div>
+        </div>
     </div>
 
-    <div class="col-lg-4">
-        <section class="card border-0 shadow-sm mb-4 sticky-side">
-            <div class="card-body">
-                <h3 class="h6 text-uppercase text-muted mb-3">{{ t('practice_title') }}</h3>
-                <p class="mb-0">{{ lesson.practice }}</p>
-            </div>
-        </section>
-
+    <div class="tab-pane fade" id="tab-cards">
         <section class="card border-0 shadow-sm">
-            <div class="card-body">
-                <h3 class="h6 text-uppercase text-muted mb-3">{{ t('glossary_title') }}</h3>
-                <div class="vstack gap-3">
+            <div class="card-body p-4">
+                <h3 class="h5 mb-2">{{ t('flashcards_title') }}</h3>
+                <p class="text-secondary small mb-4">{{ t('flashcards_hint') }}</p>
+                <div class="row g-3">
                     {% for item in lesson.glossary %}
-                        <div>
-                            <p class="fw-semibold mb-1">{{ item.term }}</p>
-                            <p class="small text-secondary mb-0">{{ item.definition }}</p>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="flashcard">
+                                <div class="flashcard-inner">
+                                    <div class="flashcard-front">{{ item.term }}</div>
+                                    <div class="flashcard-back">{{ item.definition }}</div>
+                                </div>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
             </div>
         </section>
     </div>
+
+    <div class="tab-pane fade" id="tab-notes">
+        <section class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h3 class="h5 mb-3">{{ t('notes_title') }}</h3>
+                {% if request.args.get('notes_saved') == '1' %}
+                    <div class="alert alert-success py-2">{{ t('notes_saved') }}</div>
+                {% endif %}
+                <form method="post" action="{{ url_for('save_lesson_note', lesson_id=lesson.id, lang=lang) }}">
+                    <textarea class="form-control mb-3" name="content" rows="10" placeholder="{{ t('notes_placeholder') }}">{{ note }}</textarea>
+                    <button type="submit" class="btn btn-primary">{{ t('notes_save') }}</button>
+                </form>
+            </div>
+        </section>
+    </div>
 </div>
 {% endblock %}
+
+{% block body_attrs %} data-lesson-id="{{ lesson.id }}"{% endblock %}

@@ -117,6 +117,31 @@ def _init_sqlite(path: str) -> None:
             UNIQUE(user_id, lesson_id),
             FOREIGN KEY(user_id) REFERENCES users(id)
         );
+
+        CREATE TABLE IF NOT EXISTS user_stats (
+            user_id INTEGER PRIMARY KEY,
+            xp INTEGER NOT NULL DEFAULT 0,
+            streak_days INTEGER NOT NULL DEFAULT 0,
+            last_activity_date TEXT,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        );
+
+        CREATE TABLE IF NOT EXISTS lesson_notes (
+            user_id INTEGER NOT NULL,
+            lesson_id TEXT NOT NULL,
+            content TEXT NOT NULL DEFAULT '',
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (user_id, lesson_id),
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        );
+
+        CREATE TABLE IF NOT EXISTS bookmarks (
+            user_id INTEGER NOT NULL,
+            lesson_id TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (user_id, lesson_id),
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        );
         """
     )
     columns = {row[1] for row in conn.execute("PRAGMA table_info(progress)").fetchall()}
@@ -155,6 +180,37 @@ def _init_postgres(dsn: str) -> None:
             total_questions INTEGER NOT NULL DEFAULT 0,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             UNIQUE(user_id, lesson_id)
+        );
+        """
+    )
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS user_stats (
+            user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+            xp INTEGER NOT NULL DEFAULT 0,
+            streak_days INTEGER NOT NULL DEFAULT 0,
+            last_activity_date DATE
+        );
+        """
+    )
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS lesson_notes (
+            user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            lesson_id TEXT NOT NULL,
+            content TEXT NOT NULL DEFAULT '',
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (user_id, lesson_id)
+        );
+        """
+    )
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS bookmarks (
+            user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            lesson_id TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (user_id, lesson_id)
         );
         """
     )

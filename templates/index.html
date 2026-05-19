@@ -7,10 +7,11 @@
             <p class="lead mb-4">{{ t('hero_subtitle') }}</p>
             <a class="btn btn-light btn-lg fw-semibold" href="{{ url_for('register', lang=lang) }}">{{ t('cta_start') }}</a>
         </div>
-        <div class="col-lg-4 mt-4 mt-lg-0">
-            <div class="hero-badge p-3">
-                <p class="mb-1 fw-semibold">3 Languages</p>
-                <p class="mb-1">Interactive lessons</p>
+        <div class="col-lg-4 mt-4 mt-lg-0 text-center">
+            <img src="{{ url_for('static', filename='images/hero-academy.jpg') }}" class="hero-cover rounded-4 shadow" alt="AI Academy">
+            <div class="hero-badge p-3 mt-3 text-start">
+                <p class="mb-1 fw-semibold">6 lessons · 3 languages</p>
+                <p class="mb-1">Photos and practice tasks</p>
                 <p class="mb-0">Quiz-based progress</p>
             </div>
         </div>

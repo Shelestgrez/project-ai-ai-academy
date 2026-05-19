@@ -493,19 +493,28 @@ def create_app() -> Flask:
     deep_lessons: Dict[str, Dict[str, Dict[str, object]]] = {
         "ru": {
             "intro-ai": {
-                "overview": "Этот урок формирует системное понимание ИИ: от определений и классов задач до ограничений и жизненного цикла внедрения.",
+                "overview": "Этот урок формирует системное понимание ИИ: от определений и классов задач до ограничений, командной работы и жизненного цикла внедрения в продукт.",
                 "sections": [
                     {
                         "title": "1) ИИ как инженерная система",
-                        "text": "Современный ИИ - это не магия и не один алгоритм, а комбинация данных, модели, инфраструктуры и продукта. Успех зависит от качества данных и метрик.",
+                        "text": "Современный ИИ — это не магия и не один алгоритм, а связка данных, модели, инфраструктуры и продукта. Успех зависит от качества данных, метрик и итераций с пользователями.",
+                        "image": "images/sections/pipeline.jpg",
                     },
                     {
                         "title": "2) Классы задач",
-                        "text": "Основные классы: классификация, регрессия, кластеризация, генерация контента, рекомендации и поиск аномалий. Для каждой задачи нужен свой набор метрик.",
+                        "text": "Основные классы: классификация, регрессия, кластеризация, генерация контента, рекомендации и поиск аномалий. Для каждой задачи выбирают свой набор метрик и способ проверки.",
                     },
                     {
-                        "title": "3) Ограничения",
-                        "text": "ИИ может ошибаться из-за смещенных данных, плохой разметки или изменения внешней среды. Поэтому нужны мониторинг качества и контроль рисков.",
+                        "title": "3) Слабый и сильный ИИ",
+                        "text": "Слабый (узкий) ИИ решает конкретные задачи — распознавание речи, рекомендации, диагностика. Сильный ИИ — гипотетическая универсальная система; на практике сегодня применяют именно узкие решения.",
+                    },
+                    {
+                        "title": "4) Ограничения и риски",
+                        "text": "ИИ ошибается из-за смещённых данных, плохой разметки или смены среды (data drift). Нужны мониторинг качества, человеческий контроль и понятные процедуры эскалации.",
+                    },
+                    {
+                        "title": "5) Жизненный цикл внедрения",
+                        "text": "Типичный цикл: постановка задачи → сбор данных → baseline → эксперименты → валидация → пилот → мониторинг в продакшене. Каждый этап имеет свои артефакты и критерии готовности.",
                     },
                 ],
                 "practice": "Выберите любой сервис (например, музыкальное приложение) и опишите 3 места, где ИИ может улучшить опыт пользователя: входные данные, ожидаемый результат и метрика успеха.",
@@ -513,12 +522,15 @@ def create_app() -> Flask:
                     {"term": "Датасет", "definition": "Набор данных для обучения и проверки модели."},
                     {"term": "Инференс", "definition": "Применение обученной модели к новым данным."},
                     {"term": "Метрика", "definition": "Числовой показатель качества модели."},
+                    {"term": "Baseline", "definition": "Простая модель или правило, с которым сравнивают более сложные решения."},
+                    {"term": "Data drift", "definition": "Изменение распределения входных данных со временем."},
                 ],
                 "steps": [
                     "Определите бизнес-задачу и критерий успеха до выбора модели.",
                     "Проверьте качество и репрезентативность данных перед обучением.",
                     "Сравните простой baseline и более сложные модели по метрикам.",
                     "Проведите тест на новых данных, не использованных при обучении.",
+                    "Согласуйте с командой пороги качества для пилота и продакшена.",
                     "Добавьте мониторинг после внедрения для контроля деградации.",
                 ],
                 "quiz": [
@@ -526,26 +538,36 @@ def create_app() -> Flask:
                     {"id": "q2", "question": "Что описывает инференс?", "options": ["Разметку датасета", "Применение модели к новым данным", "Удаление выбросов"], "answer": 1},
                     {"id": "q3", "question": "Почему baseline полезен?", "options": ["Показывает минимальный уровень, который нужно превзойти", "Ускоряет интернет", "Устраняет все ошибки данных"], "answer": 0},
                     {"id": "q4", "question": "Какой риск критичен после запуска?", "options": ["Смена цвета интерфейса", "Data drift и падение качества", "Слишком короткое название модели"], "answer": 1},
+                    {"id": "q5", "question": "Что характерно для узкого (слабого) ИИ?", "options": ["Решает одну конкретную задачу хорошо", "Мыслит как человек в любой области", "Не требует данных"], "answer": 0},
                 ],
             },
             "ml-basics": {
-                "overview": "Урок раскрывает полный цикл ML: подготовка данных, выбор модели, оценка и предотвращение переобучения.",
+                "overview": "Урок раскрывает полный цикл ML: подготовка данных, выбор модели, валидация, борьба с переобучением и вывод модели в продакшен.",
                 "sections": [
-                    {"title": "1) Pipeline данных", "text": "Сбор, очистка, кодирование категорий, масштабирование признаков и разделение на train/validation/test."},
-                    {"title": "2) Выбор алгоритма", "text": "Линейные модели интерпретируемы, деревья и бустинг сильны на табличных данных, нейросети полезны на сложных признаках."},
-                    {"title": "3) Оценка качества", "text": "Не ограничивайтесь accuracy. Для дисбаланса классов используйте precision, recall и F1, а также анализ ошибок."},
+                    {
+                        "title": "1) Pipeline данных",
+                        "text": "Сбор, очистка, кодирование категорий, масштабирование признаков и разделение на train/validation/test без утечки информации.",
+                        "image": "images/sections/data-quality.jpg",
+                    },
+                    {"title": "2) Обучение с учителем и без", "text": "С учителем — есть правильные ответы (классификация, регрессия). Без учителя — ищут структуру (кластеризация, снижение размерности)."},
+                    {"title": "3) Выбор алгоритма", "text": "Линейные модели интерпретируемы, деревья и бустинг сильны на табличных данных, нейросети — на изображениях, тексте и сложных признаках."},
+                    {"title": "4) Оценка качества", "text": "Не ограничивайтесь accuracy. При дисбалансе классов используйте precision, recall, F1 и матрицу ошибок."},
+                    {"title": "5) Регуляризация и переобучение", "text": "L1/L2, ранняя остановка, dropout (для нейросетей) и кросс-валидация помогают модели обобщать, а не запоминать шум."},
                 ],
-                "practice": "Возьмите задачу прогноза оттока клиентов и предложите: целевую переменную, 5 признаков, 2 метрики качества и способ борьбы с дисбалансом классов.",
+                "practice": "Возьмите задачу прогноза оттока клиентов: опишите целевую переменную, 5 признаков, 2 метрики, способ борьбы с дисбалансом и какой baseline вы бы построили первым.",
                 "glossary": [
                     {"term": "Train/Test split", "definition": "Разделение данных для обучения и независимой проверки."},
                     {"term": "Overfitting", "definition": "Переобучение: модель запомнила шум и плохо обобщает."},
                     {"term": "Feature Engineering", "definition": "Создание информативных признаков для модели."},
+                    {"term": "Cross-validation", "definition": "Повторное обучение на разных частях данных для оценки устойчивости."},
+                    {"term": "Hyperparameter", "definition": "Настройка модели, задаваемая до обучения (глубина дерева, learning rate)."},
                 ],
                 "steps": [
                     "Подготовьте данные: удалите дубликаты и обработайте пропуски.",
                     "Разделите выборку на train/validation/test без утечки данных.",
                     "Обучите baseline-модель и зафиксируйте метрики.",
-                    "Сделайте тюнинг гиперпараметров и сравните результаты.",
+                    "Сделайте тюнинг гиперпараметров на validation.",
+                    "Сравните несколько алгоритмов по одной и той же метрике.",
                     "Проверьте устойчивость модели на новых батчах данных.",
                 ],
                 "quiz": [
@@ -553,14 +575,21 @@ def create_app() -> Flask:
                     {"id": "q2", "question": "Что такое утечка данных?", "options": ["Недостаток памяти", "Использование информации из будущего в обучении", "Плохой Wi-Fi"], "answer": 1},
                     {"id": "q3", "question": "Какая метрика полезна при дисбалансе?", "options": ["Только accuracy", "F1-score", "Только скорость инференса"], "answer": 1},
                     {"id": "q4", "question": "Что обычно снижает переобучение?", "options": ["Больше эпох без контроля", "Регуляризация и валидация", "Удаление test set"], "answer": 1},
+                    {"id": "q5", "question": "Где чаще применяют бустинг на деревьях?", "options": ["На табличных бизнес-данных", "Только для генерации музыки", "Только для 3D-анимации"], "answer": 0},
                 ],
             },
             "neural-basics": {
-                "overview": "Урок объясняет внутреннюю механику нейросетей: прямой проход, функцию потерь и обратное распространение ошибки.",
+                "overview": "Урок объясняет механику нейросетей: слои, активации, функцию потерь, обратное распространение и практики стабильного обучения.",
                 "sections": [
-                    {"title": "1) Архитектура", "text": "Сеть состоит из слоев, где каждый слой преобразует входной вектор в новое представление признаков."},
-                    {"title": "2) Обучение", "text": "На прямом проходе модель делает прогноз, затем loss измеряет ошибку, после чего backpropagation обновляет веса через градиенты."},
-                    {"title": "3) Стабильность", "text": "Для стабильного обучения используют нормализацию, dropout, правильный learning rate и качественную инициализацию весов."},
+                    {
+                        "title": "1) Архитектура",
+                        "text": "Сеть состоит из слоёв: вход преобразуется в скрытые представления, выход даёт прогноз. Глубина и ширина слоёв — гиперпараметры.",
+                        "image": "images/sections/neural-layers.jpg",
+                    },
+                    {"title": "2) Перцептрон и веса", "text": "Нейрон суммирует входы с весами, добавляет смещение (bias) и пропускает результат через функцию активации."},
+                    {"title": "3) Обучение", "text": "Forward pass → loss → backpropagation вычисляет градиенты → оптимизатор (SGD, Adam) обновляет веса. Цикл повторяется по эпохам."},
+                    {"title": "4) Функции активации", "text": "ReLU ускоряет обучение, sigmoid/softmax — для вероятностей, GELU часто в трансформерах. Без нелинейности сеть не сложнее линейной модели."},
+                    {"title": "5) Стабильность", "text": "Batch normalization, dropout, подбор learning rate и ранняя остановка снижают риск расходимости и переобучения."},
                 ],
                 "practice": "Опишите архитектуру для распознавания рукописных цифр: вход, 2 скрытых слоя, выход, функцию потерь и метрику.",
                 "glossary": [
@@ -580,6 +609,7 @@ def create_app() -> Flask:
                     {"id": "q2", "question": "Что минимизирует оптимизатор?", "options": ["Размер датасета", "Функцию потерь", "Количество слоев"], "answer": 1},
                     {"id": "q3", "question": "Что делает dropout?", "options": ["Отключает случайные нейроны во время обучения", "Удаляет метки классов", "Ускоряет интернет"], "answer": 0},
                     {"id": "q4", "question": "Что может вызвать нестабильное обучение?", "options": ["Слишком большой learning rate", "Четкая валидация", "Нормализация входа"], "answer": 0},
+                    {"id": "q5", "question": "Что делает backpropagation?", "options": ["Распространяет градиент ошибки назад по слоям", "Удаляет обучающую выборку", "Меняет язык интерфейса"], "answer": 0},
                 ],
             },
         },
@@ -589,11 +619,13 @@ def create_app() -> Flask:
 
     deep_lessons["en"] = {
         "intro-ai": {
-            "overview": "This lesson builds a structured understanding of AI: definitions, task classes, limitations, and deployment lifecycle.",
+            "overview": "This lesson builds structured understanding of AI: definitions, task classes, narrow vs general AI, risks, and deployment lifecycle.",
             "sections": [
-                {"title": "1) AI as an engineering system", "text": "Modern AI combines data, models, infrastructure, and product decisions. Data quality and metrics are usually more important than model complexity."},
+                {"title": "1) AI as an engineering system", "text": "Modern AI combines data, models, infrastructure, and product decisions. Data quality and metrics usually matter more than model complexity.", "image": "images/sections/pipeline.jpg"},
                 {"title": "2) Task classes", "text": "Core classes include classification, regression, clustering, recommendation, generation, and anomaly detection."},
-                {"title": "3) Practical limits", "text": "Models fail when data shifts or labels are noisy, so monitoring and risk controls are mandatory."},
+                {"title": "3) Narrow vs general AI", "text": "Today's production systems are narrow AI: strong at one task. General AI remains a research goal, not a shipped product pattern."},
+                {"title": "4) Practical limits", "text": "Models fail when data shifts or labels are noisy. Monitoring, human review, and escalation paths are mandatory."},
+                {"title": "5) Deployment lifecycle", "text": "Typical flow: problem framing → data → baseline → experiments → validation → pilot → production monitoring."},
             ],
             "practice": "Pick one app you use daily and describe 3 AI opportunities: required inputs, expected output, and success metric.",
             "glossary": [
@@ -613,14 +645,17 @@ def create_app() -> Flask:
                 {"id": "q2", "question": "What is inference?", "options": ["Labeling data", "Using a trained model on new data", "Removing outliers"], "answer": 1},
                 {"id": "q3", "question": "Why use a baseline model?", "options": ["To set a minimum benchmark", "To replace all testing", "To remove data bias automatically"], "answer": 0},
                 {"id": "q4", "question": "What is a major post-launch risk?", "options": ["UI color changes", "Data drift", "Model name length"], "answer": 1},
+                {"id": "q5", "question": "What describes narrow AI?", "options": ["Strong at a specific task", "Human-level in every domain", "Needs no data"], "answer": 0},
             ],
         },
         "ml-basics": {
-            "overview": "This lesson covers the ML workflow: preparation, model choice, evaluation, and overfitting control.",
+            "overview": "This lesson covers the ML workflow: preparation, model choice, validation, overfitting control, and production readiness.",
             "sections": [
-                {"title": "1) Data pipeline", "text": "Collect, clean, encode categories, scale features, and split into train/validation/test."},
-                {"title": "2) Algorithm selection", "text": "Linear models are interpretable, tree ensembles are strong on tabular data, neural nets help with complex features."},
-                {"title": "3) Evaluation strategy", "text": "Go beyond accuracy. Use precision, recall, F1, and detailed error analysis."},
+                {"title": "1) Data pipeline", "text": "Collect, clean, encode categories, scale features, and split into train/validation/test without leakage.", "image": "images/sections/data-quality.jpg"},
+                {"title": "2) Supervised vs unsupervised", "text": "Supervised learning uses labels; unsupervised learning discovers structure such as clusters."},
+                {"title": "3) Algorithm selection", "text": "Linear models are interpretable, tree ensembles excel on tabular data, neural nets on images and text."},
+                {"title": "4) Evaluation strategy", "text": "Go beyond accuracy. Use precision, recall, F1, and confusion-matrix analysis."},
+                {"title": "5) Regularization", "text": "L1/L2, early stopping, and cross-validation help models generalize instead of memorizing noise."},
             ],
             "practice": "For a churn prediction task, define target variable, 5 candidate features, 2 metrics, and one class-imbalance strategy.",
             "glossary": [
@@ -643,11 +678,13 @@ def create_app() -> Flask:
             ],
         },
         "neural-basics": {
-            "overview": "This lesson explains how neural networks actually learn using forward pass, loss, and backpropagation.",
+            "overview": "This lesson explains how neural networks learn: layers, activations, loss, backpropagation, and training stability.",
             "sections": [
-                {"title": "1) Architecture", "text": "Layers transform input vectors into increasingly useful feature representations."},
-                {"title": "2) Learning loop", "text": "Forward pass makes predictions, loss quantifies error, backpropagation computes gradients, optimizer updates weights."},
-                {"title": "3) Training stability", "text": "Normalization, dropout, proper learning rate, and initialization improve convergence."},
+                {"title": "1) Architecture", "text": "Layers transform inputs into hidden representations and final predictions. Depth and width are hyperparameters.", "image": "images/sections/neural-layers.jpg"},
+                {"title": "2) Perceptron and weights", "text": "A neuron combines weighted inputs, adds bias, and applies an activation function."},
+                {"title": "3) Learning loop", "text": "Forward pass → loss → backpropagation → optimizer update. The cycle repeats for many epochs."},
+                {"title": "4) Activation functions", "text": "ReLU speeds training; sigmoid/softmax output probabilities; GELU is common in transformers."},
+                {"title": "5) Training stability", "text": "Batch norm, dropout, learning-rate tuning, and early stopping reduce divergence and overfitting."},
             ],
             "practice": "Design a simple network for digit recognition: input, two hidden layers, output size, loss function, and metric.",
             "glossary": [
@@ -672,11 +709,13 @@ def create_app() -> Flask:
     }
     deep_lessons["kk"] = {
         "intro-ai": {
-            "overview": "Бұл сабақ ЖИ туралы жүйелі түсінік береді: анықтама, міндет түрлері, шектеулер және енгізу циклі.",
+            "overview": "Бұл сабақ ЖИ туралы жүйелі түсінік береді: анықтама, міндет түрлері, тар/күшті ЖИ, тәуекелдер және енгізу циклі.",
             "sections": [
-                {"title": "1) ЖИ инженерлік жүйе ретінде", "text": "Қазіргі ЖИ - деректер, модель, инфрақұрылым және өнім шешімдерінің бірігуі."},
+                {"title": "1) ЖИ инженерлік жүйе ретінде", "text": "Қазіргі ЖИ — деректер, модель, инфрақұрылым және өнім шешімдерінің бірігуі.", "image": "images/sections/pipeline.jpg"},
                 {"title": "2) Міндет кластары", "text": "Негізгі класстар: классификация, регрессия, кластерлеу, ұсыныс, генерация және аномалия табу."},
-                {"title": "3) Шектеулер", "text": "Дерек өзгерсе не белгілеу сапасы төмен болса, модель қателеседі. Сондықтан мониторинг қажет."},
+                {"title": "3) Тар және күшті ЖИ", "text": "Тар ЖИ нақты бір міндетте күшті. Күшті ЖИ — зерттеу мақсаты; өндірісте көбіне тар шешімдер қолданылады."},
+                {"title": "4) Шектеулер", "text": "Дерек өзгерсе не белгілеу сапасы төмен болса, модель қателеседі. Мониторинг пен адам бақылауы қажет."},
+                {"title": "5) Енгізу циклі", "text": "Мақсат → дерек → baseline → эксперимент → валидация → пилот → production мониторинг."},
             ],
             "practice": "Күнделікті қолданатын бір сервисті алып, ЖИ қолдануға болатын 3 орынды сипаттаңыз: кіріс, шығыс, метрика.",
             "glossary": [
@@ -762,9 +801,11 @@ def create_app() -> Flask:
                 "description": "Как качество и структура данных влияют на результат модели.",
                 "overview": "Урок о том, почему данные важнее сложного алгоритма: сбор, разметка, очистка, баланс и контроль смещений.",
                 "sections": [
-                    {"title": "1) Источники данных", "text": "Логи, анкеты, датчики, CRM и внешние источники. Важно оценить полноту и юридическую допустимость использования."},
+                    {"title": "1) Источники данных", "text": "Логи, анкеты, датчики, CRM и внешние источники. Важно оценить полноту и юридическую допустимость использования.", "image": "images/sections/data-quality.jpg"},
                     {"title": "2) Подготовка", "text": "Очистка выбросов, обработка пропусков, унификация форматов и разметка классов."},
-                    {"title": "3) Качество", "text": "Проверяйте перекос классов, дубликаты и шум, иначе модель будет учиться на ошибках данных."},
+                    {"title": "3) Разметка и качество меток", "text": "Ошибки разметчиков напрямую ограничивают потолок качества модели. Используйте инструкции, двойную проверку и золотой набор."},
+                    {"title": "4) Баланс и репрезентативность", "text": "Проверяйте перекос классов, дубликаты и шум. Выборка должна отражать реальное использование продукта."},
+                    {"title": "5) Версионирование данных", "text": "Фиксируйте версии датасетов и пайплайнов, чтобы воспроизводить эксперименты и откатывать регрессии."},
                 ],
                 "practice": "Составьте чек-лист из 7 пунктов качества данных для проекта ИИ в вашей сфере.",
                 "glossary": [
@@ -792,11 +833,13 @@ def create_app() -> Flask:
                 "description": "Как делать ИИ-системы ответственными и безопасными для пользователей.",
                 "overview": "Урок о практической этике: справедливость, прозрачность, приватность и безопасные ограничения на поведение моделей.",
                 "sections": [
-                    {"title": "1) Справедливость", "text": "Проверяйте метрики по разным группам пользователей, чтобы уменьшить дискриминацию."},
-                    {"title": "2) Приватность", "text": "Минимизируйте персональные данные, применяйте анонимизацию и контроль доступа."},
-                    {"title": "3) Безопасность", "text": "Вводите политики ответа, фильтры контента и процедуру ручной эскалации сложных случаев."},
+                    {"title": "1) Справедливость", "text": "Проверяйте метрики по разным группам пользователей, чтобы уменьшить дискриминацию и скрытые смещения в данных.", "image": "images/sections/ethics-team.jpg"},
+                    {"title": "2) Прозрачность", "text": "Пользователь должен понимать, когда общается с ИИ, какие данные собираются и как принимается решение."},
+                    {"title": "3) Приватность", "text": "Минимизируйте персональные данные, применяйте анонимизацию, шифрование и контроль доступа."},
+                    {"title": "4) Безопасность", "text": "Вводите политики ответа, фильтры контента и процедуру ручной эскалации сложных случаев."},
+                    {"title": "5) Ответственность", "text": "Назначьте владельца продукта и процесс расследования инцидентов: кто исправляет, кто информирует пользователей."},
                 ],
-                "practice": "Для чат-бота поддержки составьте 5 правил безопасного ответа и 3 сценария эскалации к человеку.",
+                "practice": "Для чат-бота поддержки составьте 5 правил безопасного ответа, 3 сценария эскалации к человеку и чек-лист проверки fairness по двум группам пользователей.",
                 "glossary": [
                     {"term": "Fairness", "definition": "Справедливость модели по отношению к разным группам."},
                     {"term": "PII", "definition": "Персонально идентифицируемая информация."},
@@ -814,6 +857,43 @@ def create_app() -> Flask:
                     {"id": "q2", "question": "Что такое guardrails?", "options": ["Графики обучения", "Ограничения безопасного поведения модели", "Тип нейрона"], "answer": 1},
                     {"id": "q3", "question": "Зачем делать аудит по группам пользователей?", "options": ["Для оценки fairness", "Только для дизайна", "Для ускорения CPU"], "answer": 0},
                     {"id": "q4", "question": "Что делать при опасном кейсе?", "options": ["Игнорировать", "Эскалировать человеку по процедуре", "Скрыть ответ"], "answer": 1},
+                    {"id": "q5", "question": "Зачем проверять прозрачность?", "options": ["Чтобы пользователь понимал роль ИИ", "Чтобы ускорить GPU", "Чтобы скрыть ошибки"], "answer": 0},
+                ],
+            },
+            {
+                "id": "gen-ai-llm",
+                "title": "Генеративный ИИ и LLM",
+                "description": "Как работают большие языковые модели, промпты и ограничения.",
+                "overview": "Урок о генеративном ИИ: токены, контекст, промпт-инжиниринг, RAG, галлюцинации и безопасное применение LLM в продуктах.",
+                "sections": [
+                    {"title": "1) Что такое LLM", "text": "Большая языковая модель предсказывает следующий токен по контексту. Обучается на огромных корпусах текстов, затем дообучается под задачи."},
+                    {"title": "2) Промпты и контекст", "text": "Качество ответа зависит от инструкции, примеров (few-shot) и объёма контекстного окна. Структурируйте запрос: роль, задача, формат, ограничения."},
+                    {"title": "3) RAG и знания", "text": "Retrieval-Augmented Generation подмешивает актуальные документы в промпт, снижая выдумки и устаревшие ответы."},
+                    {"title": "4) Галлюцинации", "text": "Модель может уверенно выдавать неверные факты. Нужны проверка источников, цитирование и отказ отвечать при низкой уверенности."},
+                    {"title": "5) Безопасное внедрение", "text": "Фильтры, лимиты, логирование, тестовые наборы промптов и человеческий review для чувствительных сценариев."},
+                ],
+                "practice": "Напишите промпт для ассистента поддержки: роль, 3 правила тона, формат ответа JSON и пример «безопасного отказа» при медицинском вопросе.",
+                "glossary": [
+                    {"term": "Токен", "definition": "Минимальная единица текста для модели (часть слова или символ)."},
+                    {"term": "Prompt", "definition": "Инструкция и контекст, которые подаются модели перед генерацией."},
+                    {"term": "RAG", "definition": "Подход: сначала поиск по базе знаний, затем генерация ответа с опорой на найденное."},
+                    {"term": "Hallucination", "definition": "Правдоподобный, но фактически неверный ответ модели."},
+                    {"term": "Fine-tuning", "definition": "Дообучение модели на узком домене или стиле ответов."},
+                ],
+                "steps": [
+                    "Сформулируйте задачу и критерии качества ответа.",
+                    "Соберите базу знаний или документы для RAG.",
+                    "Напишите и протестируйте системный промпт на 10 кейсах.",
+                    "Добавьте guardrails и сценарии отказа.",
+                    "Измеряйте качество: точность, токсичность, задержку.",
+                    "Внедрите мониторинг промптов и обратную связь пользователей.",
+                ],
+                "quiz": [
+                    {"id": "q1", "question": "Что делает LLM на каждом шаге?", "options": ["Предсказывает следующий токен", "Сканирует жёсткий диск", "Рисует интерфейс"], "answer": 0},
+                    {"id": "q2", "question": "Зачем нужен RAG?", "options": ["Подмешать актуальные документы в контекст", "Увеличить размер кнопок", "Отключить сеть"], "answer": 0},
+                    {"id": "q3", "question": "Что такое галлюцинация?", "options": ["Уверенный, но неверный ответ", "Сбой видеокарты", "Тип активации"], "answer": 0},
+                    {"id": "q4", "question": "Что улучшает промпт?", "options": ["Чёткая роль, формат и ограничения", "Случайный набор эмодзи", "Пустой запрос"], "answer": 0},
+                    {"id": "q5", "question": "Как снизить риск в продакшене?", "options": ["Guardrails и эскалация к человеку", "Полное отключение логов", "Один промпт на все домены"], "answer": 0},
                 ],
             },
         ],
@@ -864,6 +944,36 @@ def create_app() -> Flask:
                     {"id": "q2", "question": "What are guardrails?", "options": ["Training charts", "Safety behavior constraints", "Neuron type"], "answer": 1},
                     {"id": "q3", "question": "Why evaluate by user groups?", "options": ["To measure fairness", "Only for design", "To speed CPU"], "answer": 0},
                     {"id": "q4", "question": "What to do in risky cases?", "options": ["Ignore it", "Escalate to human workflow", "Hide output"], "answer": 1},
+                    {"id": "q5", "question": "Why improve transparency?", "options": ["Users understand AI's role", "Faster GPU only", "Hide all errors"], "answer": 0},
+                ],
+            },
+            {
+                "id": "gen-ai-llm",
+                "title": "Generative AI and LLMs",
+                "description": "How large language models work, prompting, and limits.",
+                "overview": "Generative AI lesson: tokens, context windows, prompt design, RAG, hallucinations, and safe LLM deployment.",
+                "sections": [
+                    {"title": "1) What is an LLM", "text": "A large language model predicts the next token from context, trained on massive text corpora and optionally fine-tuned."},
+                    {"title": "2) Prompts and context", "text": "Answer quality depends on instructions, few-shot examples, and context length. Structure prompts: role, task, format, constraints."},
+                    {"title": "3) RAG", "text": "Retrieval-Augmented Generation injects fresh documents into the prompt to reduce stale or fabricated answers."},
+                    {"title": "4) Hallucinations", "text": "Models may sound confident but be wrong. Use citations, source checks, and refusal policies."},
+                    {"title": "5) Safe deployment", "text": "Filters, rate limits, logging, prompt test suites, and human review for sensitive flows."},
+                ],
+                "practice": "Write a support-assistant prompt: role, 3 tone rules, JSON output format, and a safe refusal example for medical questions.",
+                "glossary": [
+                    {"term": "Token", "definition": "Smallest text unit processed by the model."},
+                    {"term": "Prompt", "definition": "Instruction and context sent before generation."},
+                    {"term": "RAG", "definition": "Retrieve documents first, then generate grounded answers."},
+                    {"term": "Hallucination", "definition": "Plausible but incorrect model output."},
+                    {"term": "Fine-tuning", "definition": "Additional training on a specific domain or style."},
+                ],
+                "steps": ["Define task and answer quality criteria.", "Prepare a knowledge base for RAG.", "Draft and test a system prompt on 10 cases.", "Add guardrails and refusal paths.", "Measure accuracy, toxicity, and latency.", "Monitor prompts and user feedback."],
+                "quiz": [
+                    {"id": "q1", "question": "What does an LLM predict?", "options": ["Next token", "Disk sectors", "CSS colors"], "answer": 0},
+                    {"id": "q2", "question": "Why use RAG?", "options": ["Inject fresh documents", "Resize buttons", "Disable network"], "answer": 0},
+                    {"id": "q3", "question": "What is a hallucination?", "options": ["Confident but wrong answer", "GPU driver bug", "Activation type"], "answer": 0},
+                    {"id": "q4", "question": "What improves prompts?", "options": ["Clear role, format, constraints", "Random emojis only", "Empty input"], "answer": 0},
+                    {"id": "q5", "question": "How to reduce production risk?", "options": ["Guardrails and human escalation", "Disable all logs", "One prompt for every domain"], "answer": 0},
                 ],
             },
         ],
@@ -914,17 +1024,48 @@ def create_app() -> Flask:
                     {"id": "q2", "question": "Guardrails деген не?", "options": ["Оқу графигі", "Қауіпсіздік шектеулері", "Нейрон түрі"], "answer": 1},
                     {"id": "q3", "question": "Неге топтар бойынша бағалау керек?", "options": ["Fairness үшін", "Тек дизайн үшін", "CPU үдету үшін"], "answer": 0},
                     {"id": "q4", "question": "Қауіпті жағдайда не істеу керек?", "options": ["Елемеу", "Адамға эскалациялау", "Жауапты жасыру"], "answer": 1},
+                    {"id": "q5", "question": "Ашықтық не үшін маңызды?", "options": ["Пайдаланушы ЖИ рөлін түсінеді", "Тек GPU жылдамдығы", "Қателерді жасыру"], "answer": 0},
+                ],
+            },
+            {
+                "id": "gen-ai-llm",
+                "title": "Генеративті ЖИ және LLM",
+                "description": "Үлкен тіл модельдері, промпт және шектеулер.",
+                "overview": "Генеративті ЖИ сабағы: токен, контекст, промпт, RAG, галлюцинация және LLM-ді қауіпсіз енгізу.",
+                "sections": [
+                    {"title": "1) LLM деген не", "text": "Модель контекст бойынша келесі токенді болжайды. Үлкен мәтін корпустарында оқытылады, кейін тапсырмаға бейімделеді."},
+                    {"title": "2) Промпт және контекст", "text": "Жауап сапасы нұсқау, few-shot мысалдар және контекст көлеміне байланысты."},
+                    {"title": "3) RAG", "text": "Алдымен құжат іздеу, кейін сол негізде жауап генерациялау — ескірген ақпаратты азайтады."},
+                    {"title": "4) Галлюцинация", "text": "Модель сенімді, бірақ қате факт беруі мүмкін. Дереккөз тексеруі мен бас тарту саясаты қажет."},
+                    {"title": "5) Қауіпсіз енгізу", "text": "Фильтр, лимит, лог, промпт тесті және сезімтал сценарийлерде адам review."},
+                ],
+                "practice": "Қолдау боты үшін промпт жазыңыз: рөл, 3 тон ережесі, JSON формат және медициналық сұрақта қауіпсіз бас тарту мысалы.",
+                "glossary": [
+                    {"term": "Токен", "definition": "Модель өңдейтін мәтіннің ең кіші бірлігі."},
+                    {"term": "Prompt", "definition": "Генерация алдында берілетін нұсқау мен контекст."},
+                    {"term": "RAG", "definition": "Іздеу + генерация: жауап құжатқа сүйенеді."},
+                    {"term": "Hallucination", "definition": "Сенімді көрінетін, бірақ қате жауап."},
+                    {"term": "Fine-tuning", "definition": "Нақты доменде қосымша оқыту."},
+                ],
+                "steps": ["Міндет пен сапа критерийін анықтаңыз.", "RAG үшін білім базасын дайындаңыз.", "10 кейсте промпт тестілеңіз.", "Guardrails қосыңыз.", "Дәлдік пен кідірісті өлшеңіз.", "Промпт мониторингін жүргізіңіз."],
+                "quiz": [
+                    {"id": "q1", "question": "LLM не болжайды?", "options": ["Келесі токен", "Диск секторы", "CSS түсі"], "answer": 0},
+                    {"id": "q2", "question": "RAG не үшін?", "options": ["Жаңа құжатты контекстке қосу", "Кнопканы үлкейту", "Желіні өшіру"], "answer": 0},
+                    {"id": "q3", "question": "Галлюцинация деген не?", "options": ["Сенімді, бірақ қате жауап", "GPU ақауы", "Активация түрі"], "answer": 0},
+                    {"id": "q4", "question": "Промптті не жақсартады?", "options": ["Анық рөл, формат, шектеу", "Кездейсоқ эмодзи", "Бос сұрау"], "answer": 0},
+                    {"id": "q5", "question": "Production тәуекелін қалай азайту?", "options": ["Guardrails және адамға эскалация", "Барлық логты өшіру", "Бір промпт барлық доменге"], "answer": 0},
                 ],
             },
         ],
     }
 
     lesson_images = {
-        "intro-ai": "images/intro-ai.svg",
-        "ml-basics": "images/ml-basics.svg",
-        "neural-basics": "images/neural-basics.svg",
-        "data-foundations": "images/data-foundations.svg",
-        "ethics-safety": "images/ethics-safety.svg",
+        "intro-ai": "images/intro-ai.jpg",
+        "ml-basics": "images/ml-basics.jpg",
+        "neural-basics": "images/neural-basics.jpg",
+        "data-foundations": "images/data-foundations.jpg",
+        "ethics-safety": "images/ethics-safety.jpg",
+        "gen-ai-llm": "images/gen-ai-llm.jpg",
     }
 
     for lang, entries in extra_lessons.items():
@@ -935,7 +1076,7 @@ def create_app() -> Flask:
             extension = deep_lessons.get(lang, {}).get(lesson["id"])
             if extension:
                 lesson.update(extension)
-            lesson["image"] = lesson_images.get(lesson["id"], "images/intro-ai.svg")
+            lesson["image"] = lesson_images.get(lesson["id"], "images/intro-ai.jpg")
 
     lesson_index = {
         lang: {lesson["id"]: lesson for lesson in lessons}

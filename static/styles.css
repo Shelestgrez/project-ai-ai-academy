@@ -41,6 +41,21 @@ body {
     backdrop-filter: blur(2px);
 }
 
+.hero-cover {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+}
+
+.section-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 0.75rem;
+    border: 1px solid #e6ebf8;
+}
+
 .lesson-thumb {
     height: 150px;
     object-fit: cover;

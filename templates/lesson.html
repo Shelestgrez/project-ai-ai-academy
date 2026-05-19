@@ -27,6 +27,9 @@
                 <div class="vstack gap-3">
                     {% for section in lesson.sections %}
                         <article class="section-block">
+                            {% if section.image %}
+                                <img src="{{ url_for('static', filename=section.image) }}" class="section-image mb-3" alt="{{ section.title }}">
+                            {% endif %}
                             <h4 class="h6 fw-bold mb-2">{{ section.title }}</h4>
                             <p class="mb-0 text-secondary">{{ section.text }}</p>
                         </article>

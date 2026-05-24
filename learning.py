@@ -13,6 +13,11 @@ LESSON_META: Dict[str, Dict[str, object]] = {
     "computer-vision": {"level": "intermediate", "minutes": 20, "xp": 130, "track": "advanced"},
     "nlp-basics": {"level": "intermediate", "minutes": 20, "xp": 130, "track": "advanced"},
     "ai-product": {"level": "beginner", "minutes": 17, "xp": 110, "track": "practice"},
+    "ai-career": {"level": "beginner", "minutes": 18, "xp": 110, "track": "practice"},
+    "ai-agents": {"level": "intermediate", "minutes": 24, "xp": 150, "track": "advanced"},
+    "mlops-basics": {"level": "intermediate", "minutes": 22, "xp": 140, "track": "practice"},
+    "reinforcement-learning": {"level": "intermediate", "minutes": 26, "xp": 150, "track": "advanced"},
+    "statistics-for-ai": {"level": "beginner", "minutes": 20, "xp": 120, "track": "fundamentals"},
 }
 
 ACHIEVEMENT_DEFS = [

@@ -47,3 +47,16 @@ def test_static_lesson_image(auth_client):
     response = auth_client.get("/static/images/intro-ai.jpg")
     assert response.status_code == 200
     assert response.mimetype in ("image/jpeg", "image/jpg")
+
+
+def test_static_new_lesson_images(auth_client):
+    for path in (
+        "images/ai-career.jpg",
+        "images/ai-agents.jpg",
+        "images/mlops-basics.jpg",
+        "images/reinforcement-learning.jpg",
+        "images/statistics-for-ai.jpg",
+    ):
+        response = auth_client.get(f"/static/{path}")
+        assert response.status_code == 200, path
+        assert response.mimetype in ("image/jpeg", "image/jpg"), path

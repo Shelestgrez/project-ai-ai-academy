@@ -1194,7 +1194,7 @@ def create_app() -> Flask:
                 "description": "Как агенты планируют, вызывают инструменты и выполняют многошаговые задачи.",
                 "overview": "Урок об ИИ-агентах: архитектура plan-act-observe, tool calling, память, оркестрация и безопасное применение в бизнес-процессах.",
                 "sections": [
-                    {"title": "1) Что такое агент", "text": "Агент — LLM плюс цикл: получить цель → спланировать шаги → вызвать инструменты (API, БД, код) → проверить результат → повторить или завершить.", "image": "images/ai-agents.svg"},
+                    {"title": "1) Что такое агент", "text": "Агент — LLM плюс цикл: получить цель → спланировать шаги → вызвать инструменты (API, БД, код) → проверить результат → повторить или завершить.", "image": "images/ai-agents.jpg"},
                     {"title": "2) Tool calling", "text": "Модель не выполняет действия сама — она выбирает функцию и аргументы. Сервер выполняет вызов и возвращает результат в контекст для следующего шага."},
                     {"title": "3) Память и контекст", "text": "Краткосрочная память — история диалога. Долгосрочная — векторная база, профиль пользователя, логи прошлых сессий. Без памяти агент «забывает» цели."},
                     {"title": "4) Оркестрация", "text": "Один агент или несколько специализированных (researcher, coder, reviewer). Фреймворки помогают задавать граф шагов и лимиты."},
@@ -1262,7 +1262,7 @@ def create_app() -> Flask:
                 "description": "Агент, среда, награда и политика: как ИИ учится действиями.",
                 "overview": "Урок о reinforcement learning: MDP, Q-learning, policy gradient, exploration vs exploitation и примеры: игры, робототехника, рекомендации.",
                 "sections": [
-                    {"title": "1) Агент и среда", "text": "Агент наблюдает состояние, выбирает действие, получает награду. Среда переходит в новое состояние. Цель — максимизировать суммарную награду.", "image": "images/reinforcement-learning.svg"},
+                    {"title": "1) Агент и среда", "text": "Агент наблюдает состояние, выбирает действие, получает награду. Среда переходит в новое состояние. Цель — максимизировать суммарную награду.", "image": "images/reinforcement-learning.jpg"},
                     {"title": "2) Награда и политика", "text": "Награда задаёт желаемое поведение. Политика π(a|s) — правило выбора действий. Плохая награда приводит к нежелательным стратегиям."},
                     {"title": "3) Exploration vs exploitation", "text": "Баланс между пробой новых действий и использованием лучшего известного. ε-greedy, UCB — классические приёмы."},
                     {"title": "4) Q-learning и DQN", "text": "Q(s,a) — ожидаемая награда. Табличный Q-learning для малых пространств; DQN — нейросеть для больших состояний (Atari, роботы)."},
@@ -1295,7 +1295,7 @@ def create_app() -> Flask:
                 "description": "Вероятность, распределения, выборки и A/B — база для ML и экспериментов.",
                 "overview": "Урок о статистических основах ИИ: как интерпретировать данные, оценивать неопределённость и принимать решения по результатам экспериментов.",
                 "sections": [
-                    {"title": "1) Описательная статистика", "text": "Среднее, медиана, дисперсия, квартили. Выбросы и асимметрия влияют на модели — смотрите распределения, а не только среднее.", "image": "images/statistics-for-ai.svg"},
+                    {"title": "1) Описательная статистика", "text": "Среднее, медиана, дисперсия, квартили. Выбросы и асимметрия влияют на модели — смотрите распределения, а не только среднее.", "image": "images/statistics-for-ai.jpg"},
                     {"title": "2) Вероятность", "text": "События, условная вероятность, независимость. Байесовский подход обновляет убеждения при появлении новых данных."},
                     {"title": "3) Выборки и оценки", "text": "Выборка должна быть репрезентативной. Доверительные интервалы показывают неопределённость оценки. Большая выборка — уже интервал."},
                     {"title": "4) Гипотезы и p-value", "text": "Нулевая гипотеза, уровень значимости α, ошибки I и II рода. p-value — не «вероятность истины», а мера противоречия данным при H0."},
@@ -1504,7 +1504,7 @@ def create_app() -> Flask:
                 "description": "How agents plan, call tools, and run multi-step workflows.",
                 "overview": "AI agents: plan-act-observe loops, tool calling, memory, orchestration, and safe deployment.",
                 "sections": [
-                    {"title": "1) What is an agent", "text": "LLM plus a loop: goal → plan → tools (API, DB, code) → verify → repeat or finish.", "image": "images/ai-agents.svg"},
+                    {"title": "1) What is an agent", "text": "LLM plus a loop: goal → plan → tools (API, DB, code) → verify → repeat or finish.", "image": "images/ai-agents.jpg"},
                     {"title": "2) Tool calling", "text": "The model picks a function and arguments; the server executes and returns results to context."},
                     {"title": "3) Memory", "text": "Short-term: chat history. Long-term: vector store, user profile, session logs."},
                     {"title": "4) Orchestration", "text": "Single agent or specialized team (researcher, coder, reviewer) with step graphs and limits."},
@@ -1558,7 +1558,7 @@ def create_app() -> Flask:
                 "description": "Agent, environment, reward, and policy — learning by action.",
                 "overview": "RL basics: MDP, Q-learning, exploration vs exploitation, games and robotics.",
                 "sections": [
-                    {"title": "1) Agent and environment", "text": "Observe state, act, get reward, new state. Maximize total reward.", "image": "images/reinforcement-learning.svg"},
+                    {"title": "1) Agent and environment", "text": "Observe state, act, get reward, new state. Maximize total reward.", "image": "images/reinforcement-learning.jpg"},
                     {"title": "2) Reward and policy", "text": "Reward shapes behavior. Policy π(a|s) picks actions. Bad rewards → bad strategies."},
                     {"title": "3) Explore vs exploit", "text": "Balance trying new actions vs using the best known. ε-greedy is a classic trick."},
                     {"title": "4) Q-learning and DQN", "text": "Q(s,a) estimates expected return. DQN uses neural nets for large state spaces."},
@@ -1585,7 +1585,7 @@ def create_app() -> Flask:
                 "description": "Probability, distributions, sampling, and A/B tests for ML.",
                 "overview": "Statistical foundations: describe data, quantify uncertainty, and run sound experiments.",
                 "sections": [
-                    {"title": "1) Descriptive stats", "text": "Mean, median, variance, quartiles. Outliers and skew matter — inspect distributions.", "image": "images/statistics-for-ai.svg"},
+                    {"title": "1) Descriptive stats", "text": "Mean, median, variance, quartiles. Outliers and skew matter — inspect distributions.", "image": "images/statistics-for-ai.jpg"},
                     {"title": "2) Probability", "text": "Events, conditional probability, independence. Bayes updates beliefs with new data."},
                     {"title": "3) Sampling", "text": "Representative samples and confidence intervals show estimate uncertainty."},
                     {"title": "4) Hypothesis tests", "text": "H0, significance α, type I/II errors. p-value measures conflict with H0, not truth probability."},
@@ -1788,7 +1788,7 @@ def create_app() -> Flask:
                 "description": "Жоспарлау, tool calling және көп қадамды workflow.",
                 "overview": "Агент: мақсат → жоспар → құрал → тексеру. Қауіпсіздік және оркестрация.",
                 "sections": [
-                    {"title": "1) Агент", "text": "LLM + цикл: мақсат, құрал, нәтиже.", "image": "images/ai-agents.svg"},
+                    {"title": "1) Агент", "text": "LLM + цикл: мақсат, құрал, нәтиже.", "image": "images/ai-agents.jpg"},
                     {"title": "2) Tool calling", "text": "Модель функция таңдайды, сервер орындайды."},
                     {"title": "3) Жад", "text": "Қысқа: диалог. Ұзақ: вектор база, профиль."},
                     {"title": "4) Оркестрация", "text": "Бір немесе бірнеше маман агент, шектеулер."},
@@ -1842,7 +1842,7 @@ def create_app() -> Flask:
                 "description": "Агент, орта, сыйақы, policy.",
                 "overview": "RL: MDP, Q-learning, exploration, қолдану.",
                 "sections": [
-                    {"title": "1) Агент", "text": "Күй → әрекет → сыйақы.", "image": "images/reinforcement-learning.svg"},
+                    {"title": "1) Агент", "text": "Күй → әрекет → сыйақы.", "image": "images/reinforcement-learning.jpg"},
                     {"title": "2) Сыйақы", "text": "Сыйақы мінез-құлықты анықтайды."},
                     {"title": "3) Exploration", "text": "Жаңа әрекет vs ең жақсы белгілі."},
                     {"title": "4) Q-learning", "text": "Q(s,a) күтілетін сыйақы."},
@@ -1869,7 +1869,7 @@ def create_app() -> Flask:
                 "description": "Ықтималдық, таралу, A/B тест.",
                 "overview": "Статистика негізі: дерек сипаттау, белгісіздік, эксперимент.",
                 "sections": [
-                    {"title": "1) Сипаттау", "text": "Орта, медиана, дисперсия.", "image": "images/statistics-for-ai.svg"},
+                    {"title": "1) Сипаттау", "text": "Орта, медиана, дисперсия.", "image": "images/statistics-for-ai.jpg"},
                     {"title": "2) Ықтималдық", "text": "Оқиға, шартты ықтималдық."},
                     {"title": "3) Выборка", "text": "Сенімділік интервалы."},
                     {"title": "4) Гипотеза", "text": "H0, p-value, α."},
@@ -1904,10 +1904,10 @@ def create_app() -> Flask:
         "nlp-basics": "images/nlp-basics.jpg",
         "ai-product": "images/ai-product.jpg",
         "ai-career": "images/ai-career.jpg",
-        "ai-agents": "images/ai-agents.svg",
-        "mlops-basics": "images/mlops-basics.svg",
-        "reinforcement-learning": "images/reinforcement-learning.svg",
-        "statistics-for-ai": "images/statistics-for-ai.svg",
+        "ai-agents": "images/ai-agents.jpg",
+        "mlops-basics": "images/mlops-basics.jpg",
+        "reinforcement-learning": "images/reinforcement-learning.jpg",
+        "statistics-for-ai": "images/statistics-for-ai.jpg",
     }
     lesson_image_fallbacks = {
         "intro-ai": "images/intro-ai.svg",

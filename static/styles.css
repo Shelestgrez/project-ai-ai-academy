@@ -69,6 +69,13 @@ body {
     background: #eef4ff;
 }
 
+.lesson-thumb[src$=".svg"],
+.lesson-hero-image[src$=".svg"],
+.section-image[src$=".svg"] {
+    object-fit: contain;
+    background: linear-gradient(135deg, #eef4ff 0%, #e0e7ff 100%);
+}
+
 .lesson-header {
     background: #ffffff;
     border: 1px solid #e9edf8;
